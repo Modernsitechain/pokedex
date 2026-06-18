@@ -2,7 +2,7 @@ import { AppEnvironmentEnum } from '@core/enums/app-environment.enum';
 
 export const environment = {
   production: false,
-  ENVIRONMENT: AppEnvironmentEnum.LOCAL,
+  ENVIRONMENT: AppEnvironmentEnum.DEVELOPMENT,
   BASE_URL: {
     POKEAPI: 'https://pokeapi.co/api/v2/',
   },
