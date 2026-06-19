@@ -6,6 +6,7 @@ import {
   PokemonItem,
   PokemonList,
   PokemonListParams,
+  TypeResponse,
 } from '@core/interfaces/pokemon.interface';
 import { firstValueFrom, map, Observable, tap } from 'rxjs';
 import { ListResponse } from '@core/interfaces/response.interface';
@@ -170,4 +171,15 @@ export class PokemonService extends BaseService {
   private persistFavorites(): void {
     this.storage.set(LocalStorageKeyEnum.FAVORITE_POKEMONS, this._favorites());
   }
+
+  public getPokemonsByType(type: string): Observable<PokemonItem[]> {
+  return this.getApi<TypeResponse, never>(`/type/${type}`).pipe(
+    map((res) =>
+      res.pokemon.map((entry) => ({
+        name: entry.pokemon.name,
+        imageUrl: getBasePokemonImageUrl(extractPokemonId(entry.pokemon.url)),
+      })),
+    ),
+  );
+}
 }
