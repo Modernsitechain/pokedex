@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  resource,
 } from '@angular/core';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import {
@@ -21,7 +20,7 @@ import {
 } from '@ionic/angular/standalone';
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { heart, heartOutline } from 'ionicons/icons';
+import { chevronForward, heart, heartOutline } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -49,7 +48,7 @@ export class PokemonPageComponent {
   public readonly pokemonService = inject(PokemonService);
 
   constructor() {
-    addIcons({ heart, heartOutline });
+    addIcons({ heart, heartOutline, chevronForward });
     // load awal hanya jika store masih kosong
     if (this.pokemonService.items().length === 0) {
       this.pokemonService.loadMore();
