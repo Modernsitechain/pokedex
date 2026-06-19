@@ -8,3 +8,9 @@ export interface PokemonListItem {
   name: string;
   url: string;
 }
+
+export interface PokemonItem {
+  id?: string;
+  name: string;
+  imageUrl: string;
+}
