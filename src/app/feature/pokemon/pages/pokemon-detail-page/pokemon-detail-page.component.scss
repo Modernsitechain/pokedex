@@ -1,0 +1,33 @@
+.detail-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  .stat-name {
+    flex: 0 0 120px;
+    font-size: 0.85rem;
+  }
+  .stat-value {
+    flex: 0 0 36px;
+    text-align: right;
+  }
+  .stat-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--ion-color-light);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .stat-bar-fill {
+    height: 100%;
+    background: var(--ion-color-primary);
+    transition: width 0.3s ease;
+  }
+}

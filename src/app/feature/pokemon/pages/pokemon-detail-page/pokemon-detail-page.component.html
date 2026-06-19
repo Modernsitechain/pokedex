@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/pokemon"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-capitalize">{{ detail()?.name ?? 'Detail' }}</ion-title>
+    @if (detail(); as d) {
+      <ion-buttons slot="end">
+        <ion-button (click)="toggleFavorite()">
+          <ion-icon
+            slot="icon-only"
+            [name]="pokemonService.isFavorite(d.id.toString()) ? 'heart' : 'heart-outline'">
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (loading()) {
+    <div class="ion-text-center ion-padding">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (error()) {
+    <div class="ion-text-center ion-padding">
+      <p>Gagal memuat detail Pokemon.</p>
+    </div>
+  } @else if (detail(); as d) {
+    <div class="ion-text-center">
+      <img [src]="d.imageUrl" [alt]="d.name" class="detail-image" />
+      <h1 class="ion-text-capitalize">#{{ d.id }} {{ d.name }}</h1>
+      <div>
+        @for (type of d.types; track type) {
+          <ion-chip class="ion-text-capitalize">{{ type }}</ion-chip>
+        }
+      </div>
+    </div>
+
+    <h2>Info</h2>
+    <p>Tinggi: {{ d.height }} m</p>
+    <p>Berat: {{ d.weight }} kg</p>
+    <p>Base experience: {{ d.baseExperience }}</p>
+
+    <h2>Abilities</h2>
+    <div>
+      @for (a of d.abilities; track a.name) {
+        <ion-chip class="ion-text-capitalize">
+          <ion-label>{{ a.name }}{{ a.isHidden ? ' (hidden)' : '' }}</ion-label>
+        </ion-chip>
+      }
+    </div>
+
+    <h2>Stats</h2>
+    @for (s of d.stats; track s.name) {
+      <div class="stat-row">
+        <span class="stat-name ion-text-capitalize">{{ s.name }}</span>
+        <span class="stat-value">{{ s.value }}</span>
+        <div class="stat-bar">
+          <div class="stat-bar-fill" [style.width.%]="statPercent(s.value)"></div>
+        </div>
+      </div>
+    }
+
+    <h2>Moves ({{ d.moves.length }})</h2>
+    <div>
+      @for (move of d.moves.slice(0, 30); track move) {
+        <ion-chip class="ion-text-capitalize">{{ move }}</ion-chip>
+      }
+    </div>
+  }
+</ion-content>

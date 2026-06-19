@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Favorite ({{ pokemonService.favoriteCount() }})</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    @for (pokemon of pokemonService.favorites(); track pokemon.name) {
+      <ion-item>
+        <ion-thumbnail slot="start">
+          <img [src]="pokemon.imageUrl" [alt]="pokemon.name" />
+        </ion-thumbnail>
+        <ion-label class="ion-text-capitalize">{{ pokemon.name }}</ion-label>
+        <ion-button
+          slot="end"
+          fill="clear"
+          (click)="pokemonService.removeFavorite(pokemon.name!)">
+          <ion-icon slot="icon-only" name="trash-outline" color="danger"></ion-icon>
+        </ion-button>
+      </ion-item>
+    } @empty {
+      <div class="ion-text-center ion-padding">
+        <p>Belum ada Pokemon favorit.</p>
+      </div>
+    }
+  </ion-list>
+</ion-content>

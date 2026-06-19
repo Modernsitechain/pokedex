@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Pokemon List</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    @for (pokemon of pokemonService.items(); track pokemon.name) {
+      <ion-item>
+        <ion-thumbnail slot="start">
+          <img [src]="pokemon.imageUrl" [alt]="pokemon.name" />
+        </ion-thumbnail>
+        <ion-label class="ion-text-capitalize">{{ pokemon.name }}</ion-label>
+
+        <ion-button
+          slot="end"
+          fill="clear"
+          (click)="
+            $event.stopPropagation(); pokemonService.toggleFavorite(pokemon)
+          "
+        >
+          <ion-icon
+            slot="icon-only"
+            [name]="
+              pokemonService.isFavorite(pokemon.name!)
+                ? 'heart'
+                : 'heart-outline'
+            "
+            [color]="
+              pokemonService.isFavorite(pokemon.name!) ? 'danger' : 'medium'
+            "
+          >
+          </ion-icon>
+        </ion-button>
+
+        <!-- 2. Tambahkan tombol khusus untuk ikon ">" (Detail) -->
+        <ion-button
+          slot="end"
+          fill="clear"
+          color="medium"
+          [routerLink]="['/detail', pokemon.name]"
+        >
+          <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+        </ion-button>
+      </ion-item>
+    } @empty {
+      <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>
+    }
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="onInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="crescent"
+      loadingText="Memuat lebih banyak..."
+    >
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
