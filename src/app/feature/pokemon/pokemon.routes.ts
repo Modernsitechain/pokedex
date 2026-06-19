@@ -11,6 +11,6 @@ export const POKEMON_ROUTES: Routes = [
     path: 'favourite',
     component: PokemonFavouritePageComponent,
   },
-  { path: '', pathMatch: 'full', redirectTo: '' },
-  { path: '**', redirectTo: '' },
+  { path: '', pathMatch: 'full', redirectTo: 'list' },
+  { path: '**', redirectTo: 'list' },
 ];
