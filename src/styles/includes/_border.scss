@@ -1,0 +1,35 @@
+@use "sass:map";
+
+$border-radiuses: (
+  'none': 0rem,
+  'xs': 0.125rem,
+  'sm': 0.25rem,
+  'md': 0.5rem,
+  'lg': 0.625rem,
+  'xl': 1rem,
+  'full': 10rem,
+);
+
+@function border-radius($size) {
+  @return map.get($border-radiuses, $size);
+}
+
+@mixin border-radius-l($amount) {
+  border-top-left-radius: $amount;
+  border-bottom-left-radius: $amount;
+}
+
+@mixin border-radius-r($amount) {
+  border-top-right-radius: $amount;
+  border-bottom-right-radius: $amount;
+}
+
+@mixin border-radius-b($amount) {
+  border-bottom-right-radius: $amount;
+  border-bottom-left-radius: $amount;
+}
+
+@mixin border-radius-t($amount) {
+  border-top-left-radius: $amount;
+  border-top-right-radius: $amount;
+}

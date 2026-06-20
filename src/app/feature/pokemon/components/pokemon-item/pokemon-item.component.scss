@@ -1,3 +1,6 @@
+@use "includes" as i;
+@use "themes" as t;
+
 .poke-row {
   display: flex;
   align-items: stretch;
@@ -8,7 +11,7 @@
     flex: 1;
     min-width: 0;
 
-    --background: #ffffff;
+    --background: white;
     --border-radius: 16px;
     --padding-start: 14px;
     --inner-padding-end: 14px;
@@ -16,8 +19,9 @@
     --ripple-color: rgba(59, 130, 246, 0.12);
 
     border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06),
-                0 1px 2px rgba(17, 24, 39, 0.04);
+    box-shadow:
+      0 2px 8px rgba(17, 24, 39, 0.06),
+      0 1px 2px rgba(17, 24, 39, 0.04);
     transition: transform 0.18s ease;
 
     &:active {
@@ -58,8 +62,9 @@
 
     background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06),
-                0 1px 2px rgba(17, 24, 39, 0.04);
+    box-shadow:
+      0 2px 8px rgba(17, 24, 39, 0.06),
+      0 1px 2px rgba(17, 24, 39, 0.04);
   }
 }
 

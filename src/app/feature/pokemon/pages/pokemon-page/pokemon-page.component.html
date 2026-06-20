@@ -14,7 +14,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  @if (showSkeleton()) {
+  @if (isLoading()) {
     <ion-list>
       @for (row of skeletonRows; track $index) {
         <ion-item lines="none" class="skeleton-item">

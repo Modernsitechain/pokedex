@@ -80,11 +80,11 @@ export class PokemonPageComponent {
       : list;
   });
 
-  // skeleton saat load awal / filter type, dan belum ada data tampil
-  public readonly showSkeleton = computed<boolean>(() => {
+  public readonly isLoading = computed<boolean>(() => {
     if (this.selectedTypeLoading()) {
       return true;
     }
+
     return (
       this.pokemonService.isLoading() && this.filteredPokemons().length === 0
     );
