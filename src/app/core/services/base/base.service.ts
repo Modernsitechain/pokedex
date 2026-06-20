@@ -4,6 +4,10 @@ import { Observable } from 'rxjs';
 import { buildHttpParams } from '@src/app/core/utils/query-params.builder';
 import { environment } from '@src/environments/environment';
 
+interface GetApiOptions {
+  absoluteUrl?: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -11,12 +15,20 @@ export class BaseService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.BASE_URL.POKEAPI;
 
-  protected getApi<
-    R,
-    P extends Record<string, unknown> = Record<string, unknown>,
-  >(endpoint: string, params?: P): Observable<R> {
-    return this.http.get<R>(this.buildUrl(endpoint), {
-      params: buildHttpParams(params ?? {}),
+  protected getApi<R, P = unknown>(
+    endpoint: string,
+    params?: P,
+    options?: {
+      absoluteUrl?: boolean;
+    },
+  ): Observable<R> {
+    const isAbsoluteUrl = options?.absoluteUrl;
+    const url = isAbsoluteUrl ? endpoint : this.buildUrl(endpoint);
+
+    const httpParams = buildHttpParams(params ?? {});
+
+    return this.http.get<R>(url, {
+      params: httpParams,
     });
   }
 

@@ -32,9 +32,18 @@ import {
   heartOutline,
   filter as filterIcon,
 } from 'ionicons/icons';
-import { EMPTY, Subject, catchError, distinctUntilChanged, of, switchMap, tap } from 'rxjs';
+import {
+  EMPTY,
+  Subject,
+  catchError,
+  distinctUntilChanged,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
+import { PokemonV2Service } from '@core/services/pokemon-v2/pokemon-v2.service';
 
 @Component({
   selector: 'app-pokemon-page',
@@ -61,7 +70,7 @@ import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/p
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonPageComponent {
-  public readonly pokemonService = inject(PokemonService);
+  public readonly pokemonService = inject(PokemonV2Service);
 
   public readonly types = [
     'normal',
@@ -91,13 +100,17 @@ export class PokemonPageComponent {
   private readonly typeSelect$ = new Subject<string>();
 
   private readonly source = computed<PokemonItem[]>(() =>
-    this.selectedType() ? this.typeResults() : this.pokemonService.items(),
+    this.selectedType() ? this.typeResults() : this.pokemonService.getPokemons(),
   );
+
+  
 
   public readonly visiblePokemons = computed<PokemonItem[]>(() => {
     const term = this.searchTerm().trim().toLowerCase();
     const list = this.source();
-    return term ? list.filter((p) => p.name.toLowerCase().includes(term)) : list;
+    return term
+      ? list.filter((p) => p.name.toLowerCase().includes(term))
+      : list;
   });
 
   public readonly showInfiniteScroll = computed<boolean>(
@@ -107,29 +120,37 @@ export class PokemonPageComponent {
   constructor() {
     addIcons({ heart, heartOutline, chevronForward, filter: filterIcon });
 
-    if (this.pokemonService.items().length === 0) {
-      this.pokemonService.loadMore();
-    }
+    // if (this.pokemonService.items().length === 0) {
+    //   this.pokemonService.loadMore();
+    // }
 
-    this.typeSelect$.pipe(
-      distinctUntilChanged(),
-      tap((type) => this.selectedType.set(type)),
-      switchMap((type) => {
-        if (!type) {
-          this.typeResults.set([]);
-          this.typeLoading.set(false);
-          return EMPTY;
-        }
-        this.typeLoading.set(true);
-        return this.pokemonService.getPokemonsByType(type).pipe(
-          catchError(() => of([] as PokemonItem[])),
-        );
-      }),
-      takeUntilDestroyed(),
-    ).subscribe((data) => {
-      this.typeResults.set(data);
-      this.typeLoading.set(false);
-    });
+    this.initialize();
+
+    // this.typeSelect$
+    //   .pipe(
+    //     distinctUntilChanged(),
+    //     tap((type) => this.selectedType.set(type)),
+    //     switchMap((type) => {
+    //       if (!type) {
+    //         this.typeResults.set([]);
+    //         this.typeLoading.set(false);
+    //         return EMPTY;
+    //       }
+    //       this.typeLoading.set(true);
+    //       return this.pokemonService
+    //         .getPokemonsByType(type)
+    //         .pipe(catchError(() => of([] as PokemonItem[])));
+    //     }),
+    //     takeUntilDestroyed(),
+    //   )
+    //   .subscribe((data) => {
+    //     this.typeResults.set(data);
+    //     this.typeLoading.set(false);
+    //   });
+  }
+
+  private async initialize(): Promise<void> {
+    await this.pokemonService.loadPokemon();
   }
 
   public onSearch(event: CustomEvent): void {
@@ -141,9 +162,9 @@ export class PokemonPageComponent {
   }
 
   public async onInfinite(event: InfiniteScrollCustomEvent): Promise<void> {
-    await this.pokemonService.loadMore();
+    await this.pokemonService.loadMorePokemon();
     await event.target.complete();
-    if (!this.pokemonService.hasMore()) {
+    if (!this.pokemonService.hasMorePokemon()) {
       event.target.disabled = true;
     }
   }

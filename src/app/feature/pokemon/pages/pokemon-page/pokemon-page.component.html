@@ -43,7 +43,7 @@
     <ion-list>
       @for (pokemon of visiblePokemons(); track pokemon.name) {
         <app-pokemon-item [pokemon]="pokemon">
-          <ion-button
+          <!-- <ion-button
             actions
             fill="clear"
             class="fav-btn"
@@ -61,7 +61,7 @@
               "
             >
             </ion-icon>
-          </ion-button>
+          </ion-button> -->
         </app-pokemon-item>
       } @empty {
         <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>

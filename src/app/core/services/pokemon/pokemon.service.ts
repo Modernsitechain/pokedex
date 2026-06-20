@@ -5,11 +5,9 @@ import {
   PokemonDetailResponse,
   PokemonItem,
   PokemonList,
-  PokemonListParams,
   TypeResponse,
 } from '@core/interfaces/pokemon.interface';
 import { firstValueFrom, map, Observable } from 'rxjs';
-import { ListResponse } from '@core/interfaces/response.interface';
 import {
   extractPokemonId,
   getBasePokemonImageUrl,
@@ -24,19 +22,20 @@ export class PokemonService extends BaseService {
   private readonly storage = inject(LocalStorageService);
 
   public readonly limit = 10;
+  private readonly initialUrl = `/pokemon?offset=0&limit=${this.limit}`;
 
   // ---- state list (infinite scroll) ----
   private readonly _items = signal<PokemonItem[]>([]);
-  private readonly _offset = signal<number>(0);
+  private readonly _nextUrl = signal<string | null>(this.initialUrl);
   private readonly _total = signal<number>(0);
   private readonly _loading = signal<boolean>(false);
+  private _isFirstLoad = true;
 
   public readonly items = this._items.asReadonly();
   public readonly total = this._total.asReadonly();
   public readonly loading = this._loading.asReadonly();
-  public readonly hasMore = computed(
-    () => this._total() === 0 || this._items().length < this._total(),
-  );
+  // habis ketika API tidak memberi `next` lagi
+  public readonly hasMore = computed(() => this._nextUrl() !== null);
 
   // ---- state favorit ----
   private readonly _favorites = signal<PokemonItem[]>(
@@ -48,17 +47,29 @@ export class PokemonService extends BaseService {
 
   // ================= LIST =================
   public async loadMore(): Promise<void> {
-    if (this._loading() || !this.hasMore()) {
+    const url = this._nextUrl();
+    if (this._loading() || !url) {
       return;
     }
     this._loading.set(true);
     try {
-      const res = await firstValueFrom(
-        this.fetchPokemons({ offset: this._offset(), limit: this.limit }),
+      const res: PokemonList = await firstValueFrom(
+        this.getApi<PokemonList>(url, undefined, {
+          absoluteUrl: !this._isFirstLoad,
+        }),
       );
+      this._isFirstLoad = false;
       this._total.set(res.count);
-      this._items.update((prev) => [...prev, ...res.results]);
-      this._offset.update((o) => o + this.limit);
+      this._nextUrl.set(res.next);
+      this._items.update((prev) => [
+        ...prev,
+        ...res.results.map(
+          (item): PokemonItem => ({
+            name: item.name,
+            imageUrl: getBasePokemonImageUrl(extractPokemonId(item.url)),
+          }),
+        ),
+      ]);
     } finally {
       this._loading.set(false);
     }
@@ -66,25 +77,9 @@ export class PokemonService extends BaseService {
 
   public resetList(): void {
     this._items.set([]);
-    this._offset.set(0);
+    this._nextUrl.set(this.initialUrl);
     this._total.set(0);
-  }
-
-  private fetchPokemons(
-    params?: PokemonListParams,
-  ): Observable<ListResponse<PokemonItem>> {
-    return this.getApi<PokemonList, PokemonListParams>(
-      '/pokemon',
-      { ...params },
-    ).pipe(
-      map((res) => ({
-        ...res,
-        results: res.results.map((item) => ({
-          name: item.name,
-          imageUrl: getBasePokemonImageUrl(extractPokemonId(item.url)),
-        })),
-      })),
-    );
+    this._isFirstLoad = true;
   }
 
   // ================= FAVORIT =================
@@ -93,7 +88,7 @@ export class PokemonService extends BaseService {
   }
 
   public addFavorite(pokemon: PokemonItem): void {
-    if (this.isFavorite(pokemon.name!)) {
+    if (this.isFavorite(pokemon.name)) {
       return;
     }
     this._favorites.update((list) => [...list, pokemon]);
@@ -106,9 +101,11 @@ export class PokemonService extends BaseService {
   }
 
   public toggleFavorite(pokemon: PokemonItem): void {
-    this.isFavorite(pokemon.name!)
-      ? this.removeFavorite(pokemon.name!)
-      : this.addFavorite(pokemon);
+    if (this.isFavorite(pokemon.name)) {
+      this.removeFavorite(pokemon.name);
+    } else {
+      this.addFavorite(pokemon);
+    }
   }
 
   public clearFavorites(): void {
@@ -116,10 +113,11 @@ export class PokemonService extends BaseService {
     this.persistFavorites();
   }
 
+  // ================= DETAIL =================
   public getPokemonDetail(idOrName: string): Observable<PokemonDetail> {
-    return this.getApi<PokemonDetailResponse, never>(
-      `/pokemon/${idOrName}`,
-    ).pipe(map((res) => this.mapDetail(res)));
+    return this.getApi<PokemonDetailResponse>(`/pokemon/${idOrName}`).pipe(
+      map((res) => this.mapDetail(res)),
+    );
   }
 
   private mapDetail(res: PokemonDetailResponse): PokemonDetail {
@@ -144,18 +142,21 @@ export class PokemonService extends BaseService {
     };
   }
 
+  // ================= TYPE =================
+  public getPokemonsByType(type: string): Observable<PokemonItem[]> {
+    return this.getApi<TypeResponse>(`/type/${type}`).pipe(
+      map((res) =>
+        res.pokemon.map(
+          (entry): PokemonItem => ({
+            name: entry.pokemon.name,
+            imageUrl: getBasePokemonImageUrl(extractPokemonId(entry.pokemon.url)),
+          }),
+        ),
+      ),
+    );
+  }
+
   private persistFavorites(): void {
     this.storage.set(LocalStorageKeyEnum.FAVORITE_POKEMONS, this._favorites());
   }
-
-  public getPokemonsByType(type: string): Observable<PokemonItem[]> {
-  return this.getApi<TypeResponse, never>(`/type/${type}`).pipe(
-    map((res) =>
-      res.pokemon.map((entry) => ({
-        name: entry.pokemon.name,
-        imageUrl: getBasePokemonImageUrl(extractPokemonId(entry.pokemon.url)),
-      })),
-    ),
-  );
-}
 }
