@@ -37,7 +37,7 @@ import { PokemonEmptyStateComponent } from '@feature/pokemon/components/pokemon-
     IonIcon,
     IonSearchbar,
     PokemonItemComponent,
-    PokemonEmptyStateComponent
+    PokemonEmptyStateComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -71,12 +71,12 @@ export class PokemonFavouritePageComponent {
 
   public async removeFavourite(pokemon: PokemonItem): Promise<void> {
     const alert = await this.alertController.create({
-      header: 'Hapus favorit',
-      message: `Hapus ${pokemon.name} dari daftar favorit?`,
+      header: 'Remove favourite',
+      message: `Remove ${pokemon.name} from your favourites?`,
       buttons: [
-        { text: 'Batal', role: 'cancel' },
+        { text: 'Cancel', role: 'cancel' },
         {
-          text: 'Hapus',
+          text: 'Remove',
           role: 'destructive',
           handler: () => this.favouriteService.removeFavourite(pokemon),
         },
