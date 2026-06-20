@@ -1,8 +1,5 @@
 @use "includes" as i;
 
-ion-content{
-  margin-bottom: 2rem;
-}
 ion-list {
   @include i.flex-column();
   gap: .625rem;
