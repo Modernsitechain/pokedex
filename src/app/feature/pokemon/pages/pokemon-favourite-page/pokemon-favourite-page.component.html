@@ -1,18 +1,18 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Favorite ({{ pokemonService.favoriteCount() }})</ion-title>
+    <ion-title>Favorite ({{ total() }})</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-list>
-    @for (pokemon of pokemonService.favorites(); track pokemon.name) {
+    @for (pokemon of favouritePokemons(); track pokemon.id) {
       <app-pokemon-item [pokemon]="pokemon">
         <ion-button
           actions
           fill="clear"
           color="danger"
-          (click)="confirmRemove(pokemon)">
+          (click)="removeFavourite(pokemon)">
           <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
         </ion-button>
       </app-pokemon-item>

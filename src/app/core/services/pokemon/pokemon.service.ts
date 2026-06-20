@@ -82,37 +82,6 @@ export class PokemonService extends BaseService {
     this._isFirstLoad = true;
   }
 
-  // ================= FAVORIT =================
-  public isFavorite(name: string): boolean {
-    return this._favorites().some((p) => p.name === name);
-  }
-
-  public addFavorite(pokemon: PokemonItem): void {
-    if (this.isFavorite(pokemon.name)) {
-      return;
-    }
-    this._favorites.update((list) => [...list, pokemon]);
-    this.persistFavorites();
-  }
-
-  public removeFavorite(name: string): void {
-    this._favorites.update((list) => list.filter((p) => p.name !== name));
-    this.persistFavorites();
-  }
-
-  public toggleFavorite(pokemon: PokemonItem): void {
-    if (this.isFavorite(pokemon.name)) {
-      this.removeFavorite(pokemon.name);
-    } else {
-      this.addFavorite(pokemon);
-    }
-  }
-
-  public clearFavorites(): void {
-    this._favorites.set([]);
-    this.persistFavorites();
-  }
-
   // ================= DETAIL =================
   public getPokemonDetail(idOrName: string): Observable<PokemonDetail> {
     return this.getApi<PokemonDetailResponse>(`/pokemon/${idOrName}`).pipe(

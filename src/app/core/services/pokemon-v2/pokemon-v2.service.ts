@@ -1,10 +1,8 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { BaseService } from '../base/base.service';
-import { LocalStorageService } from '../local-storage/local-storage.service';
 import { firstValueFrom, map, Observable, tap } from 'rxjs';
 import {
   PokemonItem,
-  PokemonListParams,
   PokemonListResponse,
 } from '@core/interfaces/pokemon-v2.interface';
 import {
@@ -16,8 +14,6 @@ import {
   providedIn: 'root',
 })
 export class PokemonV2Service extends BaseService {
-  private readonly localStorageService = inject(LocalStorageService);
-
   private readonly pokemons = signal<PokemonItem[] | undefined>(undefined);
 
   public readonly isLoading = signal<boolean>(false);

@@ -5,8 +5,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { PokemonService } from '@core/services/pokemon/pokemon.service';
-import { PokemonItem } from '@core/interfaces/pokemon.interface';
 import {
   IonContent,
   IonHeader,
@@ -44,6 +42,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
 import { PokemonV2Service } from '@core/services/pokemon-v2/pokemon-v2.service';
+import { PokemonItem } from '@core/interfaces/pokemon-v2.interface';
+import { FavouriteService } from '@core/services/favourite/favourite.service';
 
 @Component({
   selector: 'app-pokemon-page',
@@ -70,7 +70,8 @@ import { PokemonV2Service } from '@core/services/pokemon-v2/pokemon-v2.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonPageComponent {
-  public readonly pokemonService = inject(PokemonV2Service);
+  private readonly pokemonService = inject(PokemonV2Service);
+  private readonly favouriteService = inject(FavouriteService);
 
   public readonly types = [
     'normal',
@@ -100,10 +101,10 @@ export class PokemonPageComponent {
   private readonly typeSelect$ = new Subject<string>();
 
   private readonly source = computed<PokemonItem[]>(() =>
-    this.selectedType() ? this.typeResults() : this.pokemonService.getPokemons(),
+    this.selectedType()
+      ? this.typeResults()
+      : this.pokemonService.getPokemons(),
   );
-
-  
 
   public readonly visiblePokemons = computed<PokemonItem[]>(() => {
     const term = this.searchTerm().trim().toLowerCase();
@@ -147,6 +148,14 @@ export class PokemonPageComponent {
     //     this.typeResults.set(data);
     //     this.typeLoading.set(false);
     //   });
+  }
+
+  protected isFavourite(pokemonId: string): boolean {
+    return this.favouriteService.isFavourite(pokemonId);
+  }
+
+  protected toggleFavourite(pokemon: PokemonItem): void {
+    void this.favouriteService.toggleFavourite(pokemon);
   }
 
   private async initialize(): Promise<void> {

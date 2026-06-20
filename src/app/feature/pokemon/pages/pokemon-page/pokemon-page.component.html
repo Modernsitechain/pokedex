@@ -41,27 +41,21 @@
     </div>
   } @else {
     <ion-list>
-      @for (pokemon of visiblePokemons(); track pokemon.name) {
+      @for (pokemon of visiblePokemons(); track pokemon.id) {
         <app-pokemon-item [pokemon]="pokemon">
-          <!-- <ion-button
+          <ion-button
             actions
             fill="clear"
             class="fav-btn"
-            (click)="pokemonService.toggleFavorite(pokemon)"
+            (click)="toggleFavourite(pokemon)"
           >
             <ion-icon
               slot="icon-only"
-              [name]="
-                pokemonService.isFavorite(pokemon.name)
-                  ? 'heart'
-                  : 'heart-outline'
-              "
-              [color]="
-                pokemonService.isFavorite(pokemon.name) ? 'danger' : 'medium'
-              "
+              [name]="isFavourite(pokemon.id) ? 'heart' : 'heart-outline'"
+              [color]="isFavourite(pokemon.id) ? 'danger' : 'medium'"
             >
             </ion-icon>
-          </ion-button> -->
+          </ion-button>
         </app-pokemon-item>
       } @empty {
         <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>
