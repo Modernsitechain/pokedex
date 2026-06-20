@@ -18,7 +18,7 @@ import { addIcons } from 'ionicons';
 import { trashOutline } from 'ionicons/icons';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
 import { FavouriteService } from '@core/services/favourite/favourite.service';
-import { PokemonItem } from '@core/interfaces/pokemon-v2.interface';
+import { PokemonItem } from '@core/interfaces/pokemon.interface';
 
 @Component({
   selector: 'app-pokemon-favourite-page',

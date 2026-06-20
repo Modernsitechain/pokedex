@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { LocalStorageService } from '../local-storage/local-storage.service';
-import { PokemonItem } from '@core/interfaces/pokemon-v2.interface';
 import { LocalStorageKeyEnum } from '@core/enums/local-storage-key.enum';
+import { PokemonItem } from '@core/interfaces/pokemon.interface';
 
 @Injectable({
   providedIn: 'root',

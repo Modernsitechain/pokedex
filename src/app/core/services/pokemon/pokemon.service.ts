@@ -1,91 +1,134 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { BaseService } from '../base/base.service';
+import { firstValueFrom, map, Observable, tap } from 'rxjs';
 import {
   PokemonDetail,
   PokemonDetailResponse,
   PokemonItem,
-  PokemonList,
-  TypeResponse,
+  PokemonListResponse,
+  PokemonTypeResponse,
 } from '@core/interfaces/pokemon.interface';
-import { firstValueFrom, map, Observable } from 'rxjs';
 import {
   extractPokemonId,
   getBasePokemonImageUrl,
 } from '@core/utils/pokemon-helper.function';
-import { LocalStorageService } from '@core/services/local-storage/local-storage.service';
-import { LocalStorageKeyEnum } from '@core/enums/local-storage-key.enum';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PokemonService extends BaseService {
-  private readonly storage = inject(LocalStorageService);
+  private readonly pokemons = signal<PokemonItem[] | undefined>(undefined);
 
-  public readonly limit = 10;
-  private readonly initialUrl = `/pokemon?offset=0&limit=${this.limit}`;
+  public readonly isLoading = signal<boolean>(false);
+  public readonly errorMessage = signal<string | undefined>(undefined);
 
-  // ---- state list (infinite scroll) ----
-  private readonly _items = signal<PokemonItem[]>([]);
-  private readonly _nextUrl = signal<string | null>(this.initialUrl);
-  private readonly _total = signal<number>(0);
-  private readonly _loading = signal<boolean>(false);
-  private _isFirstLoad = true;
+  public readonly total = signal<number>(0);
+  public readonly previousUrl = signal<string | null>(null);
+  public readonly nextUrl = signal<string | null>(null);
 
-  public readonly items = this._items.asReadonly();
-  public readonly total = this._total.asReadonly();
-  public readonly loading = this._loading.asReadonly();
-  // habis ketika API tidak memberi `next` lagi
-  public readonly hasMore = computed(() => this._nextUrl() !== null);
+  public readonly getPokemons = computed<PokemonItem[]>(() => {
+    const data = this.pokemons();
 
-  // ---- state favorit ----
-  private readonly _favorites = signal<PokemonItem[]>(
-    this.storage.get<PokemonItem[]>(LocalStorageKeyEnum.FAVORITE_POKEMONS) ??
-      [],
-  );
-  public readonly favorites = this._favorites.asReadonly();
-  public readonly favoriteCount = computed(() => this._favorites().length);
+    if (!data) return [];
 
-  // ================= LIST =================
-  public async loadMore(): Promise<void> {
-    const url = this._nextUrl();
-    if (this._loading() || !url) {
+    return data;
+  });
+
+  public readonly hasMorePokemon = computed<boolean>(() => {
+    const hasStoredPokemon = this.getPokemons().length > 0;
+
+    if (hasStoredPokemon && this.nextUrl()) return true;
+
+    return false;
+  });
+
+  public async loadPokemon(): Promise<void> {
+    const hasStoredPokemon = this.getPokemons().length > 0;
+
+    if (hasStoredPokemon || this.isLoading()) {
       return;
     }
-    this._loading.set(true);
+
+    this.isLoading.set(true);
+    this.errorMessage.set(undefined);
+
     try {
-      const res: PokemonList = await firstValueFrom(
-        this.getApi<PokemonList>(url, undefined, {
-          absoluteUrl: !this._isFirstLoad,
-        }),
+      const response = await firstValueFrom(
+        this.fetchPokemons('/pokemon', false),
       );
-      this._isFirstLoad = false;
-      this._total.set(res.count);
-      this._nextUrl.set(res.next);
-      this._items.update((prev) => [
-        ...prev,
-        ...res.results.map(
-          (item): PokemonItem => ({
-            name: item.name,
-            imageUrl: getBasePokemonImageUrl(extractPokemonId(item.url)),
-          }),
-        ),
-      ]);
+
+      this.pokemons.set(response);
+    } catch (error) {
+      this.errorMessage.set('Failed to load pokemons');
     } finally {
-      this._loading.set(false);
+      this.isLoading.set(false);
     }
   }
 
-  public resetList(): void {
-    this._items.set([]);
-    this._nextUrl.set(this.initialUrl);
-    this._total.set(0);
-    this._isFirstLoad = true;
+  public async loadMorePokemon(): Promise<void> {
+    const hasStoredPokemon = this.getPokemons().length > 0;
+    const nextUrl = this.nextUrl();
+
+    if (!hasStoredPokemon || !nextUrl) {
+      await this.loadPokemon();
+      return;
+    }
+
+    if (this.isLoading()) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(undefined);
+
+    try {
+      const response = await firstValueFrom(this.fetchPokemons(nextUrl, true));
+
+      this.pokemons.update((current) => [...(current || []), ...response]);
+    } catch (error) {
+      this.errorMessage.set('Failed to load more pokemons');
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
-  // ================= DETAIL =================
-  public getPokemonDetail(idOrName: string): Observable<PokemonDetail> {
-    return this.getApi<PokemonDetailResponse>(`/pokemon/${idOrName}`).pipe(
+  public getPokemonDetail(id: string): Observable<PokemonDetail> {
+    return this.getApi<PokemonDetailResponse>(`/pokemon/${id}`).pipe(
       map((res) => this.mapDetail(res)),
+    );
+  }
+
+  public reset(): void {
+    this.pokemons.set(undefined);
+
+    this.isLoading.set(false);
+    this.errorMessage.set(undefined);
+
+    this.total.set(0);
+    this.previousUrl.set(null);
+    this.nextUrl.set(null);
+  }
+
+  private fetchPokemons(
+    url: string,
+    isAbsoluteUrl: boolean,
+  ): Observable<PokemonItem[]> {
+    return this.getApi<PokemonListResponse>(url, undefined, {
+      absoluteUrl: isAbsoluteUrl,
+    }).pipe(
+      tap((res) => {
+        this.total.set(res.count);
+        this.previousUrl.set(res.previous);
+        this.nextUrl.set(res.next);
+      }),
+      map((res) => res.results),
+      map((res) =>
+        res.map((item) => ({
+          id: item.name,
+          name: item.name,
+          imageUrl: getBasePokemonImageUrl(extractPokemonId(item.url)),
+        })),
+      ),
     );
   }
 
@@ -113,19 +156,18 @@ export class PokemonService extends BaseService {
 
   // ================= TYPE =================
   public getPokemonsByType(type: string): Observable<PokemonItem[]> {
-    return this.getApi<TypeResponse>(`/type/${type}`).pipe(
+    return this.getApi<PokemonTypeResponse>(`/type/${type}`).pipe(
       map((res) =>
         res.pokemon.map(
           (entry): PokemonItem => ({
+            id: entry.pokemon.name,
             name: entry.pokemon.name,
-            imageUrl: getBasePokemonImageUrl(extractPokemonId(entry.pokemon.url)),
+            imageUrl: getBasePokemonImageUrl(
+              extractPokemonId(entry.pokemon.url),
+            ),
           }),
         ),
       ),
     );
-  }
-
-  private persistFavorites(): void {
-    this.storage.set(LocalStorageKeyEnum.FAVORITE_POKEMONS, this._favorites());
   }
 }

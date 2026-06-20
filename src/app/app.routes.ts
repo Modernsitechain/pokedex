@@ -10,7 +10,7 @@ export const routes: Routes = [
     loadChildren: () => POKEMON_ROUTES,
   },
   {
-    path: 'detail/:name',
+    path: 'detail/:id',
     component: PokemonDetailPageComponent,
   },
   {

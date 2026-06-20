@@ -19,7 +19,6 @@ import {
   IonLabel,
   IonButton,
   IonIcon,
-  AlertController,
 } from '@ionic/angular/standalone';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonDetail } from '@core/interfaces/pokemon.interface';
@@ -52,7 +51,7 @@ import { FavouriteService } from '@core/services/favourite/favourite.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonDetailPageComponent {
-  private readonly route = inject(ActivatedRoute);
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   public readonly pokemonService = inject(PokemonService);
@@ -68,13 +67,17 @@ export class PokemonDetailPageComponent {
 
   constructor() {
     addIcons({ heart, heartOutline, chevronBack, chevronForward });
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const name = params.get('name');
-      if (name) {
-        this.currentPokemon.set(name);
-        this.load(name);
+    this.activatedRoute.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+      const pokemonId = params.get('id');
+      if (pokemonId) {
+        this.currentPokemon.set(pokemonId);
+        this.load(pokemonId);
       }
     });
+  }
+
+  private initialize():void{
+    // this.activatedRoute.paramMap.pipe(takeUntilDestroyed())
   }
 
   private async load(name: string): Promise<void> {

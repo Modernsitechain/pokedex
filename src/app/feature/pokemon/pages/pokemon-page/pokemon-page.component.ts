@@ -39,11 +39,10 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
-import { PokemonV2Service } from '@core/services/pokemon-v2/pokemon-v2.service';
-import { PokemonItem } from '@core/interfaces/pokemon-v2.interface';
 import { FavouriteService } from '@core/services/favourite/favourite.service';
+import { PokemonService } from '@core/services/pokemon/pokemon.service';
+import { PokemonItem } from '@core/interfaces/pokemon.interface';
 
 @Component({
   selector: 'app-pokemon-page',
@@ -70,7 +69,7 @@ import { FavouriteService } from '@core/services/favourite/favourite.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonPageComponent {
-  private readonly pokemonService = inject(PokemonV2Service);
+  private readonly pokemonService = inject(PokemonService);
   private readonly favouriteService = inject(FavouriteService);
 
   public readonly types = [
