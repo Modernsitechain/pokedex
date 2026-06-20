@@ -124,7 +124,7 @@ export class PokemonService extends BaseService {
       map((res) => res.results),
       map((res) =>
         res.map((item) => ({
-          id: item.name,
+          id: extractPokemonId(item.url) || item.name,
           name: item.name,
           imageUrl: getBasePokemonImageUrl(extractPokemonId(item.url)),
         })),
@@ -160,7 +160,7 @@ export class PokemonService extends BaseService {
       map((res) =>
         res.pokemon.map(
           (entry): PokemonItem => ({
-            id: entry.pokemon.name,
+            id: extractPokemonId(entry.pokemon.url) || entry.pokemon.name,
             name: entry.pokemon.name,
             imageUrl: getBasePokemonImageUrl(
               extractPokemonId(entry.pokemon.url),
