@@ -4,6 +4,8 @@ export const environment = {
   production: false,
   ENVIRONMENT: AppEnvironmentEnum.LOCAL,
   BASE_URL: {
-    POKEAPI: 'https://pokeapi.co/api/v2/',
+    POKEAPI: 'https://pokeapi.co/api/v2',
+    SPRITE_IMAGE:
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home',
   },
 };

@@ -1,0 +1,31 @@
+<ion-buttons>
+  <ion-button id="type-filter-trigger">
+    <ion-icon
+      slot="icon-only"
+      name="filter">
+    </ion-icon>
+  </ion-button>
+</ion-buttons>
+
+<ion-popover trigger="type-filter-trigger" [dismissOnSelect]="true">
+  <ng-template>
+    <ion-content>
+      @if (loading()) {
+        <div class="ion-text-center ion-padding">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+      } @else {
+        <ion-list>
+          <ion-item button [detail]="false" (click)="select('')">
+            <ion-label>Semua type</ion-label>
+          </ion-item>
+          @for (type of types(); track type) {
+            <ion-item button [detail]="false" (click)="select(type)">
+              <ion-label class="ion-text-capitalize">{{ type }}</ion-label>
+            </ion-item>
+          }
+        </ion-list>
+      }
+    </ion-content>
+  </ng-template>
+</ion-popover>

@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Pokemon List</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Cari nama..."
+      [debounce]="300"
+      (ionInput)="onSearch($event)"
+    >
+    </ion-searchbar>
+    <app-pokemon-filter-button slot="end" [(selectedType)]="selectedType" />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (showSkeleton()) {
+    <ion-list>
+      @for (row of skeletonRows; track $index) {
+        <ion-item lines="none" class="skeleton-item">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <ion-skeleton-text [animated]="true" style="width: 60%">
+            </ion-skeleton-text>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  } @else {
+    <ion-list>
+      @for (pokemon of filteredPokemons(); track pokemon.id) {
+        <app-pokemon-item [pokemon]="pokemon"/>
+      } @empty {
+        <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>
+      }
+    </ion-list>
+
+    @if (showInfiniteScroll()) {
+      <ion-infinite-scroll (ionInfinite)="onInfinite($event)">
+        <ion-infinite-scroll-content
+          loadingSpinner="crescent"
+          loadingText="Memuat lebih banyak..."
+        >
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    }
+  }
+</ion-content>

@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Favorite ({{ total() }})</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Cari nama..."
+      [debounce]="300"
+      (ionInput)="onSearch($event)"
+    >
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    @for (pokemon of favouritePokemons(); track pokemon.id) {
+      <app-pokemon-item [pokemon]="pokemon">
+        <ion-button
+          actions
+          fill="clear"
+          color="danger"
+          (click)="removeFavourite(pokemon)"
+        >
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </app-pokemon-item>
+    } @empty {
+      <div class="ion-text-center ion-padding">
+        <p>Belum ada Pokemon favorit.</p>
+      </div>
+    }
+  </ion-list>
+</ion-content>
