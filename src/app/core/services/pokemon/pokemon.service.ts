@@ -135,8 +135,13 @@ export class PokemonService extends BaseService {
   }
 
   public getTypes(): Observable<string[]> {
+    const excluded = ['unknown', 'stellar'];
     return this.getApi<TypeListResponse>('/type').pipe(
-      map((res) => res.results.map((item) => item.name)),
+      map((res) =>
+        res.results
+          .map((item) => item.name)
+          .filter((name) => !excluded.includes(name)),
+      ),
     );
   }
 
@@ -194,7 +199,7 @@ export class PokemonService extends BaseService {
     const artwork = res.sprites.other?.['official-artwork']?.front_default;
     return {
       id: res.id,
-      name:  formatPokemonName(res.name),
+      name: formatPokemonName(res.name),
       imageUrl: artwork ?? res.sprites.front_default ?? '',
       height: res.height / 10, // API: decimeter → meter
       weight: res.weight / 10, // API: hectogram → kg

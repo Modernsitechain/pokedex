@@ -1,0 +1,8 @@
+ion-list{
+    max-height: 32rem;
+    overflow-y: auto;
+}
+ion-item {
+  --inner-padding-start: 1rem;
+  --inner-padding-end: 1rem;
+}
