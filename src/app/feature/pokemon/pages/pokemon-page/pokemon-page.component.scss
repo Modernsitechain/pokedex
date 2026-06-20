@@ -1,10 +1,6 @@
-.skeleton-item {
-  ion-thumbnail {
-    --size: 56px;
-    --border-radius: 12px;
-  }
+@use "includes" as i;
 
-  ion-skeleton-text {
-    border-radius: 8px;
-  }
+ion-list {
+  @include i.flex-column();
+  gap: .625rem;
 }

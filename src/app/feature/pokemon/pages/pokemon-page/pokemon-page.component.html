@@ -17,21 +17,15 @@
   @if (isLoading()) {
     <ion-list>
       @for (row of skeletonRows; track $index) {
-        <ion-item lines="none" class="skeleton-item">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <ion-skeleton-text [animated]="true" style="width: 60%">
-            </ion-skeleton-text>
-          </ion-label>
+        <ion-item lines="none">
+          <app-pokemon-item-skeleton />
         </ion-item>
       }
     </ion-list>
   } @else {
-    <ion-list>
+    <ion-list lines="none">
       @for (pokemon of filteredPokemons(); track pokemon.id) {
-        <app-pokemon-item [pokemon]="pokemon"/>
+        <app-pokemon-item [pokemon]="pokemon" />
       } @empty {
         <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>
       }

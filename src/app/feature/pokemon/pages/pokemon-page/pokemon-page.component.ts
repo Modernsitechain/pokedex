@@ -13,9 +13,6 @@ import {
   IonToolbar,
   IonList,
   IonItem,
-  IonLabel,
-  IonThumbnail,
-  IonSkeletonText,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonSearchbar,
@@ -27,6 +24,7 @@ import { PokemonFilterButtonComponent } from '@feature/pokemon/components/pokemo
 import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
+import { PokemonItemSkeletonComponent } from '@feature/pokemon/components/pokemon-item-skeleton/pokemon-item-skeleton.component';
 
 @Component({
   selector: 'app-pokemon-page',
@@ -39,13 +37,11 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonTitle,
     IonList,
     IonItem,
-    IonLabel,
-    IonThumbnail,
-    IonSkeletonText,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSearchbar,
     PokemonItemComponent,
+    PokemonItemSkeletonComponent,
     PokemonFilterButtonComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
