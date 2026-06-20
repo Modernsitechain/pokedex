@@ -6,7 +6,8 @@
     <ion-searchbar
       placeholder="Cari nama..."
       [debounce]="300"
-      (ionInput)="onSearch($event)">
+      (ionInput)="onSearch($event)"
+    >
     </ion-searchbar>
     <app-pokemon-filter-button slot="end" [(selectedType)]="selectedType" />
   </ion-toolbar>
@@ -21,7 +22,7 @@
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
           </ion-thumbnail>
           <ion-label>
-            <ion-skeleton-text [animated]="true" style="width: 60%;">
+            <ion-skeleton-text [animated]="true" style="width: 60%">
             </ion-skeleton-text>
           </ion-label>
         </ion-item>
@@ -30,19 +31,7 @@
   } @else {
     <ion-list>
       @for (pokemon of filteredPokemons(); track pokemon.id) {
-        <app-pokemon-item [pokemon]="pokemon">
-          <ion-button
-            actions
-            fill="clear"
-            class="fav-btn"
-            (click)="toggleFavourite(pokemon)">
-            <ion-icon
-              slot="icon-only"
-              [name]="isFavourite(pokemon.id) ? 'heart' : 'heart-outline'"
-              [color]="isFavourite(pokemon.id) ? 'danger' : 'medium'">
-            </ion-icon>
-          </ion-button>
-        </app-pokemon-item>
+        <app-pokemon-item [pokemon]="pokemon"/>
       } @empty {
         <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>
       }
@@ -52,7 +41,8 @@
       <ion-infinite-scroll (ionInfinite)="onInfinite($event)">
         <ion-infinite-scroll-content
           loadingSpinner="crescent"
-          loadingText="Memuat lebih banyak...">
+          loadingText="Memuat lebih banyak..."
+        >
         </ion-infinite-scroll-content>
       </ion-infinite-scroll>
     }

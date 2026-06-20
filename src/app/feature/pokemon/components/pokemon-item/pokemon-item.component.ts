@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, contentChild, input } from '@angular/core';
 import { IonItem, IonLabel, IonThumbnail } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
@@ -12,4 +12,6 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
 })
 export class PokemonItemComponent {
   public readonly pokemon = input.required<PokemonItem>();
+
+   public readonly actionsSlot = contentChild('actionsRef');
 }

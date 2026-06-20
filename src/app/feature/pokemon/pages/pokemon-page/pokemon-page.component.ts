@@ -18,13 +18,9 @@ import {
   IonSkeletonText,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
-  IonIcon,
-  IonButton,
   IonSearchbar,
 } from '@ionic/angular/standalone';
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { chevronForward, heart, heartOutline } from 'ionicons/icons';
 import { firstValueFrom } from 'rxjs';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
 import { PokemonFilterButtonComponent } from '@feature/pokemon/components/pokemon-filter-button/pokemon-filter-button.component';
@@ -48,8 +44,6 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonSkeletonText,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
-    IonButton,
-    IonIcon,
     IonSearchbar,
     PokemonItemComponent,
     PokemonFilterButtonComponent,
@@ -102,7 +96,6 @@ export class PokemonPageComponent {
   );
 
   constructor() {
-    addIcons({ heart, heartOutline, chevronForward });
     this.initialize();
   }
 
