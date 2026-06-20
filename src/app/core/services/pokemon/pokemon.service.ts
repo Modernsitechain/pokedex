@@ -22,6 +22,7 @@ export class PokemonService extends BaseService {
 
   public readonly isLoading = signal<boolean>(false);
   public readonly errorMessage = signal<string | undefined>(undefined);
+  private readonly isFullyLoaded = signal<boolean>(false);
 
   public readonly total = signal<number>(0);
   public readonly previousUrl = signal<string | null>(null);
@@ -93,6 +94,39 @@ export class PokemonService extends BaseService {
     }
   }
 
+  public async loadAllRemaining(): Promise<void> {
+    if (this.isFullyLoaded() || this.isLoading()) {
+      return;
+    }
+
+    const loaded = this.getPokemons().length;
+    const total = this.total();
+
+    if (loaded === 0 || loaded >= total) {
+      this.isFullyLoaded.set(true);
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(undefined);
+
+    try {
+      const remaining = total - loaded;
+      const response = await firstValueFrom(
+        this.fetchPokemons(
+          `/pokemon?offset=${loaded}&limit=${remaining}`,
+          false,
+        ),
+      );
+      this.pokemons.update((current) => [...(current ?? []), ...response]);
+      this.isFullyLoaded.set(true);
+    } catch {
+      this.errorMessage.set('Failed to load all pokemons');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
   public getPokemonDetail(id: string): Observable<PokemonDetail> {
     return this.getApi<PokemonDetailResponse>(`/pokemon/${id}`).pipe(
       map((res) => this.mapDetail(res)),
@@ -102,6 +136,22 @@ export class PokemonService extends BaseService {
   public getTypes(): Observable<string[]> {
     return this.getApi<TypeListResponse>('/type').pipe(
       map((res) => res.results.map((item) => item.name)),
+    );
+  }
+
+  public getPokemonsByType(type: string): Observable<PokemonItem[]> {
+    return this.getApi<PokemonTypeResponse>(`/type/${type}`).pipe(
+      map((res) =>
+        res.pokemon.map(
+          (entry): PokemonItem => ({
+            id: extractPokemonId(entry.pokemon.url) || entry.pokemon.name,
+            name: entry.pokemon.name,
+            imageUrl: getBasePokemonImageUrl(
+              extractPokemonId(entry.pokemon.url),
+            ),
+          }),
+        ),
+      ),
     );
   }
 
@@ -159,22 +209,5 @@ export class PokemonService extends BaseService {
       })),
       moves: res.moves.map((m) => m.move.name),
     };
-  }
-
-  // ================= TYPE =================
-  public getPokemonsByType(type: string): Observable<PokemonItem[]> {
-    return this.getApi<PokemonTypeResponse>(`/type/${type}`).pipe(
-      map((res) =>
-        res.pokemon.map(
-          (entry): PokemonItem => ({
-            id: extractPokemonId(entry.pokemon.url) || entry.pokemon.name,
-            name: entry.pokemon.name,
-            imageUrl: getBasePokemonImageUrl(
-              extractPokemonId(entry.pokemon.url),
-            ),
-          }),
-        ),
-      ),
-    );
   }
 }

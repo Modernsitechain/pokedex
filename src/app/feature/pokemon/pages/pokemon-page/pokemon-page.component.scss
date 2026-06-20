@@ -9,3 +9,14 @@ ion-select {
   height: 100%;
   margin: 0;
 }
+
+.skeleton-item {
+  ion-thumbnail {
+    --size: 56px;
+    --border-radius: 12px;
+  }
+
+  ion-skeleton-text {
+    border-radius: 8px;
+  }
+}

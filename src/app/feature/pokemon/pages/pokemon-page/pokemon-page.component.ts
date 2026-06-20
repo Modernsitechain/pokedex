@@ -12,11 +12,14 @@ import {
   IonTitle,
   IonToolbar,
   IonList,
+  IonItem,
+  IonLabel,
+  IonThumbnail,
+  IonSkeletonText,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonIcon,
   IonButton,
-  IonSpinner,
   IonSearchbar,
 } from '@ionic/angular/standalone';
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
@@ -39,11 +42,14 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonToolbar,
     IonTitle,
     IonList,
+    IonItem,
+    IonLabel,
+    IonThumbnail,
+    IonSkeletonText,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonButton,
     IonIcon,
-    IonSpinner,
     IonSearchbar,
     PokemonItemComponent,
     PokemonFilterButtonComponent,
@@ -58,19 +64,17 @@ export class PokemonPageComponent {
   public readonly selectedTypeLoading = signal<boolean>(false);
   private readonly selectedTypeResult = signal<PokemonItem[]>([]);
 
+  public readonly searchValue = signal<string>('');
+
+  // dummy array untuk merender baris skeleton
+  public readonly skeletonRows = Array.from({ length: 8 });
+
   protected pokemonTypeEffect = effect(() => {
     const type = this.selectedType();
     void this.handleTypeChange(type);
   });
 
-  public readonly searchValue = signal<string>('');
-
-  constructor() {
-    addIcons({ heart, heartOutline, chevronForward });
-    this.initialize();
-  }
-
-  public filteredPokemons = computed<PokemonItem[]>(() => {
+  public readonly filteredPokemons = computed<PokemonItem[]>(() => {
     const hasType = !!this.selectedType();
     const list = hasType
       ? this.selectedTypeResult()
@@ -81,9 +85,26 @@ export class PokemonPageComponent {
       ? list.filter((p) => p.name.toLowerCase().includes(term))
       : list;
   });
+
+  // skeleton saat load awal / filter type, dan belum ada data tampil
+  public readonly showSkeleton = computed<boolean>(() => {
+    if (this.selectedTypeLoading()) {
+      return true;
+    }
+    return (
+      this.pokemonService.isLoading() && this.filteredPokemons().length === 0
+    );
+  });
+
+  // infinite scroll hanya saat browsing biasa (bukan filter type, bukan sedang search)
   public readonly showInfiniteScroll = computed<boolean>(
-    () => !this.selectedType(),
+    () => !this.selectedType() && !this.searchValue().trim(),
   );
+
+  constructor() {
+    addIcons({ heart, heartOutline, chevronForward });
+    this.initialize();
+  }
 
   public isFavourite(pokemonId: string): boolean {
     return this.favouriteService.isFavourite(pokemonId);
@@ -93,16 +114,22 @@ export class PokemonPageComponent {
     void this.favouriteService.toggleFavourite(pokemon);
   }
 
+  public onSearch(event: CustomEvent): void {
+    const term = (event.detail as { value?: string }).value ?? '';
+    this.searchValue.set(term);
+
+    // saat user mulai search, pastikan seluruh data ter-load (sekali saja)
+    if (term.trim()) {
+      void this.pokemonService.loadAllRemaining();
+    }
+  }
+
   public async onInfinite(event: InfiniteScrollCustomEvent): Promise<void> {
     await this.pokemonService.loadMorePokemon();
     await event.target.complete();
     if (!this.pokemonService.hasMorePokemon()) {
       event.target.disabled = true;
     }
-  }
-
-  public onSearch(event: CustomEvent): void {
-    this.searchValue.set((event.detail as { value?: string }).value ?? '');
   }
 
   private async initialize(): Promise<void> {
