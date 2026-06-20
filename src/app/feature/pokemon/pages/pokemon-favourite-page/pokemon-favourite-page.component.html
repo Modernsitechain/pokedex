@@ -10,14 +10,9 @@
       <app-pokemon-item [pokemon]="pokemon">
         <ion-button
           actions
-          slot="end"
           fill="clear"
           color="danger"
-          (click)="
-            $event.stopPropagation();
-            pokemonService.removeFavorite(pokemon.name)
-          "
-        >
+          (click)="confirmRemove(pokemon)">
           <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
         </ion-button>
       </app-pokemon-item>

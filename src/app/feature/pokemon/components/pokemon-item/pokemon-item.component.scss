@@ -1,20 +1,28 @@
-.poke-item {
-  --background: #ffffff;
-  --border-radius: 16px;
-  --padding-start: 14px;
-  --padding-end: 10px;
-  --inner-padding-end: 0;
-  --min-height: 76px;
-  --ripple-color: rgba(59, 130, 246, 0.12);
-
+.poke-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
   margin: 8px 0;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06),
-              0 1px 2px rgba(17, 24, 39, 0.04);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
 
-  &:active {
-    transform: scale(0.985);
+  &__item {
+    flex: 1;
+    min-width: 0;
+
+    --background: #ffffff;
+    --border-radius: 16px;
+    --padding-start: 14px;
+    --inner-padding-end: 14px;
+    --min-height: 76px;
+    --ripple-color: rgba(59, 130, 246, 0.12);
+
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06),
+                0 1px 2px rgba(17, 24, 39, 0.04);
+    transition: transform 0.18s ease;
+
+    &:active {
+      transform: scale(0.985);
+    }
   }
 
   &__thumb {
@@ -39,9 +47,18 @@
     letter-spacing: -0.01em;
   }
 
+  // kartu kanan (tombol)
   &__actions {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
-    gap: 2px;
+    justify-content: center;
+    min-width: 64px;
+    padding: 0 6px;
+
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06),
+                0 1px 2px rgba(17, 24, 39, 0.04);
   }
 }

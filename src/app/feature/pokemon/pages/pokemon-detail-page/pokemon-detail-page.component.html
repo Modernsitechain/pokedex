@@ -9,7 +9,7 @@
         <ion-button (click)="toggleFavorite()">
           <ion-icon
             slot="icon-only"
-            [name]="pokemonService.isFavorite(d.id.toString()) ? 'heart' : 'heart-outline'">
+            [name]="pokemonService.isFavorite(d.name) ? 'heart' : 'heart-outline'">
           </ion-icon>
         </ion-button>
       </ion-buttons>

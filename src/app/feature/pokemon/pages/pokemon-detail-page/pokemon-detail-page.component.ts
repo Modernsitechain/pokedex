@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -37,8 +38,7 @@ export class PokemonDetailPageComponent {
 
   constructor() {
     addIcons({ heart, heartOutline, chevronBack, chevronForward });
-    // paramMap observable: re-load otomatis saat prev/next mengubah :id
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       const name = params.get('name');
       if (name) {
         this.currentPokemon.set(name);
@@ -62,7 +62,7 @@ export class PokemonDetailPageComponent {
 
   public goTo(id: number): void {
     if (id < 1 || id > this.maxPokemonId) return;
-    this.router.navigate(['/pokemon', id]);
+    this.router.navigate(['/detail', id]);
   }
 
   public statPercent(value: number): number {

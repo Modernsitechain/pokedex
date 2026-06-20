@@ -8,7 +8,7 @@ import {
   PokemonListParams,
   TypeResponse,
 } from '@core/interfaces/pokemon.interface';
-import { firstValueFrom, map, Observable, tap } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { ListResponse } from '@core/interfaces/response.interface';
 import {
   extractPokemonId,
@@ -22,11 +22,6 @@ import { LocalStorageKeyEnum } from '@core/enums/local-storage-key.enum';
 })
 export class PokemonService extends BaseService {
   private readonly storage = inject(LocalStorageService);
-
-  public readonly totalPokemons = signal<number>(0);
-
-  public readonly previousApiUrl = signal<string | null>(null);
-  public readonly nextApiUrl = signal<string | null>(null);
 
   public readonly limit = 10;
 
@@ -50,25 +45,6 @@ export class PokemonService extends BaseService {
   );
   public readonly favorites = this._favorites.asReadonly();
   public readonly favoriteCount = computed(() => this._favorites().length);
-
-  public getPokemons(params?: PokemonListParams): Observable<PokemonItem[]> {
-    return this.getApi<PokemonList, PokemonListParams>('/pokemon', {
-      ...params,
-    }).pipe(
-      tap((res) => {
-        this.totalPokemons.set(res.count);
-        this.previousApiUrl.set(res.previous);
-        this.nextApiUrl.set(res.next);
-      }),
-      map((res) => res.results),
-      map((res) =>
-        res.map((item) => ({
-          name: item.name,
-          imageUrl: getBasePokemonImageUrl(extractPokemonId(item.url)),
-        })),
-      ),
-    );
-  }
 
   // ================= LIST =================
   public async loadMore(): Promise<void> {

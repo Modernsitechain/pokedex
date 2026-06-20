@@ -47,9 +47,7 @@
             actions
             fill="clear"
             class="fav-btn"
-            (click)="
-              $event.stopPropagation(); pokemonService.toggleFavorite(pokemon)
-            "
+            (click)="pokemonService.toggleFavorite(pokemon)"
           >
             <ion-icon
               slot="icon-only"
