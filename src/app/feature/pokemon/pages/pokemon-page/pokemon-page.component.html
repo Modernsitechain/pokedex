@@ -9,30 +9,9 @@
       (ionInput)="onSearch($event)"
     >
     </ion-searchbar>
-    <ion-buttons slot="end">
-      <ion-button id="type-filter-trigger">
-        <ion-icon slot="icon-only" name="filter"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <app-pokemon-filter-button slot="end" [(selectedType)]="filterType"/>
   </ion-toolbar>
 </ion-header>
-
-<ion-popover trigger="type-filter-trigger" [dismissOnSelect]="true">
-  <ng-template>
-    <ion-content>
-      <ion-list>
-        <ion-item button [detail]="false" (click)="selectType('')">
-          <ion-label>Semua type</ion-label>
-        </ion-item>
-        @for (type of types; track type) {
-          <ion-item button [detail]="false" (click)="selectType(type)">
-            <ion-label class="ion-text-capitalize">{{ type }}</ion-label>
-          </ion-item>
-        }
-      </ion-list>
-    </ion-content>
-  </ng-template>
-</ion-popover>
 
 <ion-content class="ion-padding">
   @if (typeLoading()) {

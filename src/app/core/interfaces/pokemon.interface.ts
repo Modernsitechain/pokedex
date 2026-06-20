@@ -14,6 +14,8 @@ export interface PokemonListResponse {
   }[];
 }
 
+export type TypeListResponse = PokemonListResponse;
+
 export type PokemonDetailResponse = DetailResponse;
 
 export interface PokemonTypeResponse {

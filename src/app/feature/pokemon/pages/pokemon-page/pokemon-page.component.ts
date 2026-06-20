@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -11,35 +12,19 @@ import {
   IonTitle,
   IonToolbar,
   IonList,
-  IonItem,
-  IonLabel,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonIcon,
   IonButton,
   IonSearchbar,
   IonSpinner,
-  IonButtons,
-  IonPopover,
 } from '@ionic/angular/standalone';
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import {
-  chevronForward,
-  heart,
-  heartOutline,
-  filter as filterIcon,
-} from 'ionicons/icons';
-import {
-  EMPTY,
-  Subject,
-  catchError,
-  distinctUntilChanged,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { chevronForward, heart, heartOutline } from 'ionicons/icons';
+import { firstValueFrom } from 'rxjs';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
+import { PokemonFilterButtonComponent } from '@feature/pokemon/components/pokemon-filter-button/pokemon-filter-button.component';
 import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
@@ -54,17 +39,14 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonToolbar,
     IonTitle,
     IonList,
-    IonItem,
-    IonLabel,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonButton,
     IonIcon,
     IonSearchbar,
     IonSpinner,
-    IonButtons,
-    IonPopover,
     PokemonItemComponent,
+    PokemonFilterButtonComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -72,37 +54,14 @@ export class PokemonPageComponent {
   private readonly pokemonService = inject(PokemonService);
   private readonly favouriteService = inject(FavouriteService);
 
-  public readonly types = [
-    'normal',
-    'fire',
-    'water',
-    'electric',
-    'grass',
-    'ice',
-    'fighting',
-    'poison',
-    'ground',
-    'flying',
-    'psychic',
-    'bug',
-    'rock',
-    'ghost',
-    'dragon',
-    'dark',
-    'steel',
-    'fairy',
-  ];
+  public readonly filterType = signal<string>('');
 
   private readonly searchTerm = signal<string>('');
-  private readonly selectedType = signal<string>('');
   private readonly typeResults = signal<PokemonItem[]>([]);
   public readonly typeLoading = signal<boolean>(false);
-  private readonly typeSelect$ = new Subject<string>();
 
   private readonly source = computed<PokemonItem[]>(() =>
-    this.selectedType()
-      ? this.typeResults()
-      : this.pokemonService.getPokemons(),
+    this.filterType() ? this.typeResults() : this.pokemonService.getPokemons(),
   );
 
   public readonly visiblePokemons = computed<PokemonItem[]>(() => {
@@ -114,39 +73,18 @@ export class PokemonPageComponent {
   });
 
   public readonly showInfiniteScroll = computed<boolean>(
-    () => !this.selectedType(),
+    () => !this.filterType(),
   );
 
   constructor() {
-    addIcons({ heart, heartOutline, chevronForward, filter: filterIcon });
-
-    // if (this.pokemonService.items().length === 0) {
-    //   this.pokemonService.loadMore();
-    // }
+    addIcons({ heart, heartOutline, chevronForward });
 
     this.initialize();
 
-    // this.typeSelect$
-    //   .pipe(
-    //     distinctUntilChanged(),
-    //     tap((type) => this.selectedType.set(type)),
-    //     switchMap((type) => {
-    //       if (!type) {
-    //         this.typeResults.set([]);
-    //         this.typeLoading.set(false);
-    //         return EMPTY;
-    //       }
-    //       this.typeLoading.set(true);
-    //       return this.pokemonService
-    //         .getPokemonsByType(type)
-    //         .pipe(catchError(() => of([] as PokemonItem[])));
-    //     }),
-    //     takeUntilDestroyed(),
-    //   )
-    //   .subscribe((data) => {
-    //     this.typeResults.set(data);
-    //     this.typeLoading.set(false);
-    //   });
+    effect(() => {
+      const type = this.filterType();
+      void this.handleTypeChange(type);
+    });
   }
 
   protected isFavourite(pokemonId: string): boolean {
@@ -165,15 +103,29 @@ export class PokemonPageComponent {
     this.searchTerm.set((event.detail as { value?: string }).value ?? '');
   }
 
-  public selectType(type: string): void {
-    this.typeSelect$.next(type);
-  }
-
   public async onInfinite(event: InfiniteScrollCustomEvent): Promise<void> {
     await this.pokemonService.loadMorePokemon();
     await event.target.complete();
     if (!this.pokemonService.hasMorePokemon()) {
       event.target.disabled = true;
+    }
+  }
+
+  private async handleTypeChange(type: string): Promise<void> {
+    if (!type) {
+      this.typeResults.set([]);
+      return;
+    }
+    this.typeLoading.set(true);
+    try {
+      const data = await firstValueFrom(
+        this.pokemonService.getPokemonsByType(type),
+      );
+      this.typeResults.set(data);
+    } catch {
+      this.typeResults.set([]);
+    } finally {
+      this.typeLoading.set(false);
     }
   }
 }

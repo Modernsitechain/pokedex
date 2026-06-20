@@ -7,6 +7,7 @@ import {
   PokemonItem,
   PokemonListResponse,
   PokemonTypeResponse,
+  TypeListResponse,
 } from '@core/interfaces/pokemon.interface';
 import {
   extractPokemonId,
@@ -95,6 +96,12 @@ export class PokemonService extends BaseService {
   public getPokemonDetail(id: string): Observable<PokemonDetail> {
     return this.getApi<PokemonDetailResponse>(`/pokemon/${id}`).pipe(
       map((res) => this.mapDetail(res)),
+    );
+  }
+
+  public getTypes(): Observable<string[]> {
+    return this.getApi<TypeListResponse>('/type').pipe(
+      map((res) => res.results.map((item) => item.name)),
     );
   }
 
