@@ -1,26 +1,26 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>Pokemon List</ion-title>
   </ion-toolbar>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-searchbar
       placeholder="Cari nama..."
       [debounce]="300"
       (ionInput)="onSearch($event)"
     >
     </ion-searchbar>
-    <app-pokemon-filter-button slot="end" [(selectedType)]="filterType"/>
+    <app-pokemon-filter-button slot="end" [(selectedType)]="selectedType"/>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  @if (typeLoading()) {
+  @if (selectedTypeLoading()) {
     <div class="ion-text-center ion-padding">
       <ion-spinner name="crescent"></ion-spinner>
     </div>
   } @else {
     <ion-list>
-      @for (pokemon of visiblePokemons(); track pokemon.id) {
+      @for (pokemon of filteredPokemons(); track pokemon.id) {
         <app-pokemon-item [pokemon]="pokemon">
           <ion-button
             actions

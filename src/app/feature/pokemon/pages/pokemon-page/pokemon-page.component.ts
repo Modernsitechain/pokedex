@@ -16,8 +16,8 @@ import {
   IonInfiniteScrollContent,
   IonIcon,
   IonButton,
-  IonSearchbar,
   IonSpinner,
+  IonSearchbar,
 } from '@ionic/angular/standalone';
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { addIcons } from 'ionicons';
@@ -43,8 +43,8 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonInfiniteScrollContent,
     IonButton,
     IonIcon,
-    IonSearchbar,
     IonSpinner,
+    IonSearchbar,
     PokemonItemComponent,
     PokemonFilterButtonComponent,
   ],
@@ -54,53 +54,43 @@ export class PokemonPageComponent {
   private readonly pokemonService = inject(PokemonService);
   private readonly favouriteService = inject(FavouriteService);
 
-  public readonly filterType = signal<string>('');
+  public readonly selectedType = signal<string>('');
+  public readonly selectedTypeLoading = signal<boolean>(false);
+  private readonly selectedTypeResult = signal<PokemonItem[]>([]);
 
-  private readonly searchTerm = signal<string>('');
-  private readonly typeResults = signal<PokemonItem[]>([]);
-  public readonly typeLoading = signal<boolean>(false);
+  protected pokemonTypeEffect = effect(() => {
+    const type = this.selectedType();
+    void this.handleTypeChange(type);
+  });
 
-  private readonly source = computed<PokemonItem[]>(() =>
-    this.filterType() ? this.typeResults() : this.pokemonService.getPokemons(),
-  );
+  public readonly searchValue = signal<string>('');
 
-  public readonly visiblePokemons = computed<PokemonItem[]>(() => {
-    const term = this.searchTerm().trim().toLowerCase();
-    const list = this.source();
+  constructor() {
+    addIcons({ heart, heartOutline, chevronForward });
+    this.initialize();
+  }
+
+  public filteredPokemons = computed<PokemonItem[]>(() => {
+    const hasType = !!this.selectedType();
+    const list = hasType
+      ? this.selectedTypeResult()
+      : this.pokemonService.getPokemons();
+
+    const term = this.searchValue().trim().toLowerCase();
     return term
       ? list.filter((p) => p.name.toLowerCase().includes(term))
       : list;
   });
-
   public readonly showInfiniteScroll = computed<boolean>(
-    () => !this.filterType(),
+    () => !this.selectedType(),
   );
 
-  constructor() {
-    addIcons({ heart, heartOutline, chevronForward });
-
-    this.initialize();
-
-    effect(() => {
-      const type = this.filterType();
-      void this.handleTypeChange(type);
-    });
-  }
-
-  protected isFavourite(pokemonId: string): boolean {
+  public isFavourite(pokemonId: string): boolean {
     return this.favouriteService.isFavourite(pokemonId);
   }
 
-  protected toggleFavourite(pokemon: PokemonItem): void {
+  public toggleFavourite(pokemon: PokemonItem): void {
     void this.favouriteService.toggleFavourite(pokemon);
-  }
-
-  private async initialize(): Promise<void> {
-    await this.pokemonService.loadPokemon();
-  }
-
-  public onSearch(event: CustomEvent): void {
-    this.searchTerm.set((event.detail as { value?: string }).value ?? '');
   }
 
   public async onInfinite(event: InfiniteScrollCustomEvent): Promise<void> {
@@ -111,21 +101,29 @@ export class PokemonPageComponent {
     }
   }
 
+  public onSearch(event: CustomEvent): void {
+    this.searchValue.set((event.detail as { value?: string }).value ?? '');
+  }
+
+  private async initialize(): Promise<void> {
+    await this.pokemonService.loadPokemon();
+  }
+
   private async handleTypeChange(type: string): Promise<void> {
     if (!type) {
-      this.typeResults.set([]);
+      this.selectedTypeResult.set([]);
       return;
     }
-    this.typeLoading.set(true);
+    this.selectedTypeLoading.set(true);
     try {
       const data = await firstValueFrom(
         this.pokemonService.getPokemonsByType(type),
       );
-      this.typeResults.set(data);
+      this.selectedTypeResult.set(data);
     } catch {
-      this.typeResults.set([]);
+      this.selectedTypeResult.set([]);
     } finally {
-      this.typeLoading.set(false);
+      this.selectedTypeLoading.set(false);
     }
   }
 }
