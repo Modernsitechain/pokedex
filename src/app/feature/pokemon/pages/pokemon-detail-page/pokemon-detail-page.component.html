@@ -6,10 +6,10 @@
     <ion-title class="ion-text-capitalize">{{ detail()?.name ?? 'Detail' }}</ion-title>
     @if (detail(); as d) {
       <ion-buttons slot="end">
-        <ion-button (click)="toggleFavorite()">
+        <ion-button (click)="toggleFavourite()">
           <ion-icon
             slot="icon-only"
-            [name]="pokemonService.isFavorite(d.id.toString()) ? 'heart' : 'heart-outline'">
+            [name]="isFavourite(d.name) ? 'heart' : 'heart-outline'">
           </ion-icon>
         </ion-button>
       </ion-buttons>

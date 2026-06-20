@@ -1,31 +1,62 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar,
-  IonButtons, IonBackButton, IonSpinner, IonChip, IonLabel,
-  IonButton, IonIcon
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonSpinner,
+  IonChip,
+  IonLabel,
+  IonButton,
+  IonIcon,
+  AlertController,
 } from '@ionic/angular/standalone';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonDetail } from '@core/interfaces/pokemon.interface';
 import { addIcons } from 'ionicons';
-import { heart, heartOutline, chevronBack, chevronForward } from 'ionicons/icons';
+import {
+  heart,
+  heartOutline,
+  chevronBack,
+  chevronForward,
+} from 'ionicons/icons';
+import { FavouriteService } from '@core/services/favourite/favourite.service';
 
 @Component({
   selector: 'app-pokemon-detail-page',
   templateUrl: './pokemon-detail-page.component.html',
   styleUrls: ['./pokemon-detail-page.component.scss'],
   imports: [
-    IonContent, IonHeader, IonToolbar, IonTitle,
-    IonButtons, IonBackButton, IonSpinner, IonChip, IonLabel,
-    IonButton, IonIcon
+    IonContent,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonBackButton,
+    IonSpinner,
+    IonChip,
+    IonLabel,
+    IonButton,
+    IonIcon,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
   public readonly pokemonService = inject(PokemonService);
+  private readonly favouriteService = inject(FavouriteService);
 
   public readonly detail = signal<PokemonDetail | null>(null);
   public readonly loading = signal<boolean>(true);
@@ -37,8 +68,7 @@ export class PokemonDetailPageComponent {
 
   constructor() {
     addIcons({ heart, heartOutline, chevronBack, chevronForward });
-    // paramMap observable: re-load otomatis saat prev/next mengubah :id
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       const name = params.get('name');
       if (name) {
         this.currentPokemon.set(name);
@@ -51,7 +81,9 @@ export class PokemonDetailPageComponent {
     this.loading.set(true);
     this.error.set(false);
     try {
-      const data = await firstValueFrom(this.pokemonService.getPokemonDetail(name));
+      const data = await firstValueFrom(
+        this.pokemonService.getPokemonDetail(name),
+      );
       this.detail.set(data);
     } catch {
       this.error.set(true);
@@ -62,17 +94,22 @@ export class PokemonDetailPageComponent {
 
   public goTo(id: number): void {
     if (id < 1 || id > this.maxPokemonId) return;
-    this.router.navigate(['/pokemon', id]);
+    this.router.navigate(['/detail', id]);
   }
 
   public statPercent(value: number): number {
     return Math.min(100, (value / this.maxStat) * 100);
   }
 
-  public toggleFavorite(): void {
+  protected isFavourite(pokemonId: string): boolean {
+    return this.favouriteService.isFavourite(pokemonId);
+  }
+
+  public toggleFavourite(): void {
     const d = this.detail();
     if (!d) return;
-    this.pokemonService.toggleFavorite({
+    this.favouriteService.toggleFavourite({
+      id: d.name,
       name: d.name,
       imageUrl: d.imageUrl,
     });
