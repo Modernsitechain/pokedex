@@ -27,7 +27,7 @@
       @for (pokemon of filteredPokemons(); track pokemon.id) {
         <app-pokemon-item [pokemon]="pokemon" />
       } @empty {
-        <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>
+        <app-pokemon-empty-state />
       }
     </ion-list>
 
@@ -35,7 +35,7 @@
       <ion-infinite-scroll (ionInfinite)="onInfinite($event)">
         <ion-infinite-scroll-content
           loadingSpinner="crescent"
-          loadingText="Memuat lebih banyak..."
+          loadingText="Loading more..."
         >
         </ion-infinite-scroll-content>
       </ion-infinite-scroll>

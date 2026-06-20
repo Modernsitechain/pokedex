@@ -1,0 +1,40 @@
+@use "includes" as i;
+@use "themes" as t;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.empty-state {
+  @include i.flex-column(center, center);
+  text-align: center;
+
+  &__icon-wrap {
+    @include i.flex(center, center);
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: t.get-color("primary-neutral", 50);
+    margin-bottom: 20px;
+  }
+
+  &__icon {
+    font-size: 44px;
+    color: t.get-color("primary-neutral");
+  }
+
+  &__title {
+    margin: 0 0 8px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  &__message {
+    margin: 0;
+    max-width: 260px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}

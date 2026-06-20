@@ -25,6 +25,7 @@ import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
 import { PokemonItemSkeletonComponent } from '@feature/pokemon/components/pokemon-item-skeleton/pokemon-item-skeleton.component';
+import { PokemonEmptyStateComponent } from '@feature/pokemon/components/pokemon-empty-state/pokemon-empty-state.component';
 
 @Component({
   selector: 'app-pokemon-page',
@@ -43,6 +44,7 @@ import { PokemonItemSkeletonComponent } from '@feature/pokemon/components/pokemo
     PokemonItemComponent,
     PokemonItemSkeletonComponent,
     PokemonFilterButtonComponent,
+    PokemonEmptyStateComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
