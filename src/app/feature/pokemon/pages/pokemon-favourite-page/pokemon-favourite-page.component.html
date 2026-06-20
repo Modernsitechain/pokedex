@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list>
+  <ion-list lines="none">
     @for (pokemon of favouritePokemons(); track pokemon.id) {
       <app-pokemon-item [pokemon]="pokemon">
         <ion-button
@@ -26,9 +26,10 @@
         </ion-button>
       </app-pokemon-item>
     } @empty {
-      <div class="ion-text-center ion-padding">
-        <p>Belum ada Pokemon favorit.</p>
-      </div>
+      <app-pokemon-empty-state
+        title="No favourites yet"
+        message="Pokémon you mark as favourite will appear here."
+      />
     }
   </ion-list>
 </ion-content>

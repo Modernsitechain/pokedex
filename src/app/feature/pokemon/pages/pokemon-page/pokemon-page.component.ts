@@ -13,9 +13,6 @@ import {
   IonToolbar,
   IonList,
   IonItem,
-  IonLabel,
-  IonThumbnail,
-  IonSkeletonText,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonSearchbar,
@@ -27,6 +24,8 @@ import { PokemonFilterButtonComponent } from '@feature/pokemon/components/pokemo
 import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
+import { PokemonItemSkeletonComponent } from '@feature/pokemon/components/pokemon-item-skeleton/pokemon-item-skeleton.component';
+import { PokemonEmptyStateComponent } from '@feature/pokemon/components/pokemon-empty-state/pokemon-empty-state.component';
 
 @Component({
   selector: 'app-pokemon-page',
@@ -39,14 +38,13 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonTitle,
     IonList,
     IonItem,
-    IonLabel,
-    IonThumbnail,
-    IonSkeletonText,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonSearchbar,
     PokemonItemComponent,
+    PokemonItemSkeletonComponent,
     PokemonFilterButtonComponent,
+    PokemonEmptyStateComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -80,11 +78,11 @@ export class PokemonPageComponent {
       : list;
   });
 
-  // skeleton saat load awal / filter type, dan belum ada data tampil
-  public readonly showSkeleton = computed<boolean>(() => {
+  public readonly isLoading = computed<boolean>(() => {
     if (this.selectedTypeLoading()) {
       return true;
     }
+
     return (
       this.pokemonService.isLoading() && this.filteredPokemons().length === 0
     );

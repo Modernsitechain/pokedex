@@ -11,6 +11,7 @@ import {
 } from '@core/interfaces/pokemon.interface';
 import {
   extractPokemonId,
+  formatPokemonName,
   getBasePokemonImageUrl,
 } from '@core/utils/pokemon-helper.function';
 
@@ -134,8 +135,13 @@ export class PokemonService extends BaseService {
   }
 
   public getTypes(): Observable<string[]> {
+    const excluded = ['unknown', 'stellar'];
     return this.getApi<TypeListResponse>('/type').pipe(
-      map((res) => res.results.map((item) => item.name)),
+      map((res) =>
+        res.results
+          .map((item) => item.name)
+          .filter((name) => !excluded.includes(name)),
+      ),
     );
   }
 
@@ -145,7 +151,7 @@ export class PokemonService extends BaseService {
         res.pokemon.map(
           (entry): PokemonItem => ({
             id: extractPokemonId(entry.pokemon.url) || entry.pokemon.name,
-            name: entry.pokemon.name,
+            name: formatPokemonName(entry.pokemon.name),
             imageUrl: getBasePokemonImageUrl(
               extractPokemonId(entry.pokemon.url),
             ),
@@ -182,7 +188,7 @@ export class PokemonService extends BaseService {
       map((res) =>
         res.map((item) => ({
           id: extractPokemonId(item.url) || item.name,
-          name: item.name,
+          name: formatPokemonName(item.name),
           imageUrl: getBasePokemonImageUrl(extractPokemonId(item.url)),
         })),
       ),
@@ -193,7 +199,7 @@ export class PokemonService extends BaseService {
     const artwork = res.sprites.other?.['official-artwork']?.front_default;
     return {
       id: res.id,
-      name: res.name,
+      name: formatPokemonName(res.name),
       imageUrl: artwork ?? res.sprites.front_default ?? '',
       height: res.height / 10, // API: decimeter → meter
       weight: res.weight / 10, // API: hectogram → kg
