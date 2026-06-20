@@ -15,7 +15,6 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonThumbnail,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonIcon,
@@ -33,8 +32,8 @@ import {
   heartOutline,
   filter as filterIcon,
 } from 'ionicons/icons';
-import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
 
 @Component({
   selector: 'app-pokemon-page',
@@ -48,15 +47,15 @@ import { firstValueFrom } from 'rxjs';
     IonList,
     IonItem,
     IonLabel,
-    IonThumbnail,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     IonButton,
     IonIcon,
     IonSearchbar,
     IonSpinner,
-    RouterLink,
-    IonButtons, IonPopover,
+    IonButtons,
+    IonPopover,
+    PokemonItemComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -109,7 +108,12 @@ export class PokemonPageComponent {
   );
 
   constructor() {
-    addIcons({ heart, heartOutline, chevronForward, filter: filterIcon });
+    addIcons({
+      heart,
+      heartOutline,
+      chevronForward,
+      filter: filterIcon
+    });
     if (this.pokemonService.items().length === 0) {
       this.pokemonService.loadMore();
     }

@@ -42,15 +42,11 @@
   } @else {
     <ion-list>
       @for (pokemon of visiblePokemons(); track pokemon.name) {
-        <ion-item>
-          <ion-thumbnail slot="start">
-            <img [src]="pokemon.imageUrl" [alt]="pokemon.name" />
-          </ion-thumbnail>
-          <ion-label class="ion-text-capitalize">{{ pokemon.name }}</ion-label>
-
+        <app-pokemon-item [pokemon]="pokemon">
           <ion-button
-            slot="end"
+            actions
             fill="clear"
+            class="fav-btn"
             (click)="
               $event.stopPropagation(); pokemonService.toggleFavorite(pokemon)
             "
@@ -68,16 +64,7 @@
             >
             </ion-icon>
           </ion-button>
-
-          <ion-button
-            slot="end"
-            fill="clear"
-            color="medium"
-            [routerLink]="['/detail', pokemon.name]"
-          >
-            <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
-          </ion-button>
-        </ion-item>
+        </app-pokemon-item>
       } @empty {
         <div class="ion-text-center ion-padding">Tidak ada Pokemon.</div>
       }

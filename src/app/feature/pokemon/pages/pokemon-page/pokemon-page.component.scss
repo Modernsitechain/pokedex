@@ -2,3 +2,11 @@ ion-select {
   max-width: 120px;
   --padding-end: 12px;
 }
+
+.fav-btn {
+  --border-radius: 50%;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  width: 40px;
+  height: 40px;
+}
