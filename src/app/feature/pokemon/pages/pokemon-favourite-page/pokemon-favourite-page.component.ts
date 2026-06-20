@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  signal,
 } from '@angular/core';
 import {
   IonContent,
@@ -13,6 +14,7 @@ import {
   IonButton,
   IonIcon,
   AlertController,
+  IonSearchbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { trashOutline } from 'ionicons/icons';
@@ -32,6 +34,7 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonList,
     IonButton,
     IonIcon,
+    IonSearchbar,
     PokemonItemComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,17 +43,29 @@ export class PokemonFavouritePageComponent {
   private readonly favouriteService = inject(FavouriteService);
   private readonly alertController = inject(AlertController);
 
+  public readonly searchValue = signal<string>('');
+
   constructor() {
     addIcons({ trashOutline });
   }
 
-  protected favouritePokemons = computed<PokemonItem[]>(() =>
-    this.favouriteService.favourites(),
-  );
+  public favouritePokemons = computed<PokemonItem[]>(() => {
+    const list = this.favouriteService.favourites();
+    const term = this.searchValue().trim().toLowerCase();
 
-  protected total = computed<number>(
+    return term
+      ? list.filter((item) => item.name.toLowerCase().includes(term))
+      : list;
+  });
+
+  public total = computed<number>(
     () => this.favouriteService.favourites().length,
   );
+
+  public onSearch(event: CustomEvent): void {
+    const term = (event.detail as { value?: string }).value ?? '';
+    this.searchValue.set(term);
+  }
 
   public async removeFavourite(pokemon: PokemonItem): Promise<void> {
     const alert = await this.alertController.create({

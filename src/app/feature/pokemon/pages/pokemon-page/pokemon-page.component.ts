@@ -76,7 +76,7 @@ export class PokemonPageComponent {
 
     const term = this.searchValue().trim().toLowerCase();
     return term
-      ? list.filter((p) => p.name.toLowerCase().includes(term))
+      ? list.filter((item) => item.name.toLowerCase().includes(term))
       : list;
   });
 

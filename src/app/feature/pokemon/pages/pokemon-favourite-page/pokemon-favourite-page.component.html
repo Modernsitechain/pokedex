@@ -1,6 +1,14 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-title>Favorite ({{ total() }})</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Cari nama..."
+      [debounce]="300"
+      (ionInput)="onSearch($event)"
+    >
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -12,7 +20,8 @@
           actions
           fill="clear"
           color="danger"
-          (click)="removeFavourite(pokemon)">
+          (click)="removeFavourite(pokemon)"
+        >
           <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
         </ion-button>
       </app-pokemon-item>
