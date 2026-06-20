@@ -1,22 +1,6 @@
-ion-select {
-  max-width: 120px;
-  --padding-end: 12px;
-}
+@use "includes" as i;
 
-.fav-btn {
-  --padding-start: 6px;
-  --padding-end: 6px;
-  height: 100%;
-  margin: 0;
-}
-
-.skeleton-item {
-  ion-thumbnail {
-    --size: 56px;
-    --border-radius: 12px;
-  }
-
-  ion-skeleton-text {
-    border-radius: 8px;
-  }
+ion-list {
+  @include i.flex-column();
+  gap: .625rem;
 }

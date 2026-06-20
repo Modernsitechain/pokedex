@@ -17,7 +17,7 @@
       } @else {
         <ion-list>
           <ion-item button [detail]="false" (click)="select('')">
-            <ion-label>Semua type</ion-label>
+            <ion-label>All type</ion-label>
           </ion-item>
           @for (type of types(); track type) {
             <ion-item button [detail]="false" (click)="select(type)">

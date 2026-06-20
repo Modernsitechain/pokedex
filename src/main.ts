@@ -12,5 +12,6 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(),
+    provideIonicAngular({ mode: 'ios' })
   ],
 });

@@ -21,6 +21,7 @@ import { trashOutline } from 'ionicons/icons';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
 import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
+import { PokemonEmptyStateComponent } from '@feature/pokemon/components/pokemon-empty-state/pokemon-empty-state.component';
 
 @Component({
   selector: 'app-pokemon-favourite-page',
@@ -36,6 +37,7 @@ import { PokemonItem } from '@core/interfaces/pokemon.interface';
     IonIcon,
     IonSearchbar,
     PokemonItemComponent,
+    PokemonEmptyStateComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

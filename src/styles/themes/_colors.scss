@@ -1,0 +1,106 @@
+@use "sass:map";
+
+$colors: (
+  "primary-neutral": (
+    50: #E9F1FB,
+    100: #CDDCE8,
+    200: #B2C4D4,
+    300:  #95ACC0,
+    400: #68879F,
+    500: #607E95,
+    600: #5B778D,
+    700: #4B6376,
+    800: #3C5060,
+    900: #2A3A48,
+  ),
+  "primary-green": (
+    50: #DEF1F3,
+    100: #ADDCE0,
+    200: #75C7CB,
+    300: #34B0B5,
+    400: #01A0A3,
+    500: #008F90,
+    600: #008283,
+    700: #007372,
+    800: #006361,
+    900: #004743,
+  ),
+  "neutral-gray": (
+    50: #FAFCFD,
+    100: #F4F8FA,
+    200: #EFF4F7,
+    300: #EAF1F5,
+    400: #DCE5EA,
+    500: #DBE3E8,
+    600: #C9D2D8,
+    700: #BBC4CB,
+    800: #99A4A8,
+    900: #829198,
+  ),
+  "red": (
+    50: #FBEFED,
+    200: #F5CECB,
+    400: #E8AFA9,
+    500: #DD887F,
+    600: #DD887F,
+    800: #D32B1B
+  ),
+  "magenta": (
+    50: #FAF4F7,
+    200: #EEDDE6,
+    400: #E4C9D7,
+    500: #CD9BB5,
+    600: #CD9BB5,
+    800: #BD7A9C
+  ),
+  "orange": (
+    50: #FEF6F0,
+    200: #FDE8DA,
+    400: #FAD0B6,
+    500: #F7B992,
+    600: #F7B992,
+    800: #F5A26E
+  ),
+  "green": (
+    50: #F3F8F5,
+    200: #E2ECE7,
+    400: #C5DAD0,
+    500: #8CB5A1,
+    600: #8CB5A1,
+    800: #70AA8E
+  ),
+  "blue": (
+    50: #F1F5FA,
+    200: #DCE5F2,
+    400: #BACDE5,
+    500: #88A8D6,
+    600: #88A8D6,
+    800: #759CCB
+  ),
+  "yellow": (
+    50: #FFF8E9,
+    200: #FCEAC5,
+    400: #FEE3A9,
+    500: #FED67F,
+    600: #FED67F,
+    800: #FEC855
+  ),
+);
+
+@function get-color($color, $shade: 500) {
+  $config: map.get($colors, $color);
+  @return map.get($config, $shade);
+}
+
+$white: #ffffff;
+$black: #2a3a48;
+$semantic-stroke:  rgba(#5F51FF0D, 0.1);
+
+$content-primary: #2A3A48;
+$content-secondary: #4B4B4B;
+$content-tertiary: #5E5E5E;
+
+$background-light: get-color("neutral-gray", 50);
+
+$border-opaque: #5E5E5E;
+$border-selected: #2A3A48;

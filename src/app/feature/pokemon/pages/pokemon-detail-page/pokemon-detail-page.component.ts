@@ -30,6 +30,7 @@ import {
   chevronForward,
 } from 'ionicons/icons';
 import { FavouriteService } from '@core/services/favourite/favourite.service';
+import { getBasePokemonImageUrl } from '@core/utils/pokemon-helper.function';
 
 @Component({
   selector: 'app-pokemon-detail-page',
@@ -112,9 +113,9 @@ export class PokemonDetailPageComponent {
     const d = this.detail();
     if (!d) return;
     this.favouriteService.toggleFavourite({
-      id: d.name,
+      id: String(d.id),
       name: d.name,
-      imageUrl: d.imageUrl,
+      imageUrl: getBasePokemonImageUrl(String(d.id)),
     });
   }
 }
