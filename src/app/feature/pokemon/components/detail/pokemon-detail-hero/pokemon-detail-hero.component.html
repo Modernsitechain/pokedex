@@ -1,0 +1,33 @@
+<div class="hero">
+  <span class="hero__id">#{{ pokemon().id }}</span>
+
+  <div class="hero__image-wrap">
+    <img [src]="displayImage()" [alt]="pokemon().name" class="hero__image" />
+    @if (pokemon().cryUrl) {
+      <button class="hero__cry" (click)="playCry()" aria-label="Play cry">
+        <ion-icon name="volume-high-outline"></ion-icon>
+      </button>
+    }
+  </div>
+
+  <h1 class="hero__name ion-text-capitalize">{{ pokemon().name }}</h1>
+
+  <div class="hero__types">
+    @for (type of pokemon().types; track type) {
+      <span class="type-badge" [attr.data-type]="type">{{ type }}</span>
+    }
+  </div>
+
+  @if (gallery().length > 1) {
+    <div class="gallery">
+      @for (item of gallery(); track item.url) {
+        <button
+          class="gallery__thumb"
+          [class.is-active]="displayImage() === item.url"
+          (click)="selectImage(item.url)">
+          <img [src]="item.url" [alt]="item.label" />
+        </button>
+      }
+    </div>
+  }
+</div>

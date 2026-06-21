@@ -22,6 +22,7 @@ import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/p
 import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
 import { PokemonEmptyStateComponent } from '@feature/pokemon/components/pokemon-empty-state/pokemon-empty-state.component';
+import { ToastService } from '@core/services/toast/toast.service';
 
 @Component({
   selector: 'app-pokemon-favourite-page',
@@ -37,13 +38,14 @@ import { PokemonEmptyStateComponent } from '@feature/pokemon/components/pokemon-
     IonIcon,
     IonSearchbar,
     PokemonItemComponent,
-    PokemonEmptyStateComponent
+    PokemonEmptyStateComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonFavouritePageComponent {
   private readonly favouriteService = inject(FavouriteService);
   private readonly alertController = inject(AlertController);
+  private readonly toastService = inject(ToastService);
 
   public readonly searchValue = signal<string>('');
 
@@ -71,14 +73,19 @@ export class PokemonFavouritePageComponent {
 
   public async removeFavourite(pokemon: PokemonItem): Promise<void> {
     const alert = await this.alertController.create({
-      header: 'Hapus favorit',
-      message: `Hapus ${pokemon.name} dari daftar favorit?`,
+      header: 'Remove favourite',
+      message: `Remove ${pokemon.name} from your favourites?`,
       buttons: [
-        { text: 'Batal', role: 'cancel' },
+        { text: 'Cancel', role: 'cancel' },
         {
-          text: 'Hapus',
+          text: 'Remove',
           role: 'destructive',
-          handler: () => this.favouriteService.removeFavourite(pokemon),
+          handler: async () => {
+            this.favouriteService.removeFavourite(pokemon);
+            await this.toastService.error(
+              `${pokemon.name} removed from favourites`,
+            );
+          },
         },
       ],
     });

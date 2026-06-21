@@ -1,0 +1,31 @@
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 20px 0 8px;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px;
+  background: var(--ion-color-light);
+  border-radius: 16px;
+
+  &__icon {
+    font-size: 22px;
+    color: var(--ion-color-primary);
+  }
+  &__value {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  &__label {
+    font-size: 0.72rem;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}

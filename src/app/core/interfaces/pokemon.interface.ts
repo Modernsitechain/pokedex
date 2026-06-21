@@ -34,12 +34,19 @@ export interface PokemonItem {
 }
 
 export interface PokemonDetail {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
-  height: number; // dalam meter
-  weight: number; // dalam kg
+  sprites: {
+    officialArtwork: string;
+    front: string | null;
+    frontShiny: string | null;
+  };
+  cryUrl: string | null;
+  height: number;
+  weight: number;
   baseExperience: number;
+  totalStats: number;
   types: string[];
   abilities: { name: string; isHidden: boolean }[];
   stats: { name: string; value: number }[];
