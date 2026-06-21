@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/feature/pokemon/components/pokemon-filter-button/pokemon-filter-button.component.scss"],
+  "sourcesContent": ["ion-list{\n    max-height: 32rem;\n    overflow-y: auto;\n}\nion-item {\n  --inner-padding-start: 1rem;\n  --inner-padding-end: 1rem;\n}\n"],
+  "mappings": ";AAAA;AACI,cAAA;AACA,cAAA;;AAEJ;AACE,yBAAA;AACA,uBAAA;;",
+  "names": []
+}
