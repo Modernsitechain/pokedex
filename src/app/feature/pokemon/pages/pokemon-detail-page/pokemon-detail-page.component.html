@@ -5,15 +5,13 @@
     </ion-buttons>
 
     @if (pokemon()) {
-      <ion-title class="ion-text-capitalize">{{
-        pokemon()?.name ?? "Detail"
-      }}</ion-title>
+      <ion-title class="ion-text-capitalize">{{ pokemon()?.name }}</ion-title>
       <ion-buttons slot="end">
         <ion-button (click)="toggleFavourite()">
           <ion-icon
             slot="icon-only"
             [name]="isFavourite(pokemon()!.id) ? 'heart' : 'heart-outline'"
-            [color]="isFavourite(pokemon()!.id) && 'danger'"
+            [color]="isFavourite(pokemon()!.id) ? 'danger' : ''"
           >
           </ion-icon>
         </ion-button>
@@ -24,57 +22,63 @@
 
 <ion-content class="ion-padding">
   @if (isLoading()) {
-    <div class="ion-text-center ion-padding">
-      <ion-spinner name="crescent"></ion-spinner>
-    </div>
+    <ng-container *ngTemplateOutlet="loadingState"></ng-container>
   } @else if (errorMessage()) {
-    <div class="ion-text-center ion-padding">
-      <p>Gagal memuat detail Pokemon.</p>
-    </div>
+    <ng-container *ngTemplateOutlet="errorState"></ng-container>
   } @else if (pokemon(); as pokemon) {
-    <div class="ion-text-center">
-      <img [src]="pokemon.imageUrl" [alt]="pokemon.name" class="detail-image" />
-      <h1 class="ion-text-capitalize">#{{ pokemon.id }} {{ pokemon.name }}</h1>
-      <div>
-        @for (type of pokemon.types; track type) {
-          <ion-chip class="ion-text-capitalize">{{ type }}</ion-chip>
-        }
-      </div>
-    </div>
-
-    <h2>Info</h2>
-    <p>Tinggi: {{ pokemon.height }} m</p>
-    <p>Berat: {{ pokemon.weight }} kg</p>
-    <p>Base experience: {{ pokemon.baseExperience }}</p>
-
-    <h2>Abilities</h2>
-    <div>
-      @for (a of pokemon.abilities; track a.name) {
-        <ion-chip class="ion-text-capitalize">
-          <ion-label>{{ a.name }}{{ a.isHidden ? " (hidden)" : "" }}</ion-label>
-        </ion-chip>
-      }
-    </div>
-
-    <h2>Stats</h2>
-    @for (s of pokemon.stats; track s.name) {
-      <div class="stat-row">
-        <span class="stat-name ion-text-capitalize">{{ s.name }}</span>
-        <span class="stat-value">{{ s.value }}</span>
-        <div class="stat-bar">
-          <div
-            class="stat-bar-fill"
-            [style.width.%]="statPercent(s.value)"
-          ></div>
-        </div>
-      </div>
-    }
-
-    <h2>Moves ({{ pokemon.moves.length }})</h2>
-    <div>
-      @for (move of pokemon.moves.slice(0, 30); track move) {
-        <ion-chip class="ion-text-capitalize">{{ move }}</ion-chip>
-      }
-    </div>
+    <app-pokemon-detail-hero [pokemon]="pokemon" />
+    <app-pokemon-detail-info [pokemon]="pokemon" />
+    <app-pokemon-detail-abilities [abilities]="pokemon.abilities" />
+    <app-pokemon-detail-stats
+      [stats]="pokemon.stats"
+      [total]="pokemon.totalStats"
+    />
+    <app-pokemon-detail-moves [moves]="pokemon.moves" />
   }
 </ion-content>
+
+<ng-template #loadingState>
+  <div class="detail-skeleton">
+    <div class="detail-skeleton__image">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </div>
+    <div class="detail-skeleton__title">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </div>
+    <div class="detail-skeleton__chips">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </div>
+    <div class="detail-skeleton__heading">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </div>
+    @for (line of [1, 2, 3]; track line) {
+      <div class="detail-skeleton__line">
+        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+      </div>
+    }
+    <div class="detail-skeleton__heading">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </div>
+    @for (stat of [1, 2, 3, 4, 5, 6]; track stat) {
+      <div class="detail-skeleton__stat">
+        <ion-skeleton-text
+          [animated]="true"
+          class="detail-skeleton__stat-label"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          [animated]="true"
+          class="detail-skeleton__stat-bar"
+        ></ion-skeleton-text>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #errorState>
+  <app-pokemon-empty-state
+    icon="alert-circle-outline"
+    title="Something went wrong"
+    [message]="errorMessage() ?? 'Failed to load Pokémon details.'"
+  />
+</ng-template>
