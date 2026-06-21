@@ -56,7 +56,6 @@ export class PokemonPageComponent {
 
   public readonly searchValue = signal<string>('');
 
-  // dummy array untuk merender baris skeleton
   public readonly skeletonRows = Array.from({ length: 8 });
 
   protected pokemonTypeEffect = effect(() => {
@@ -86,7 +85,6 @@ export class PokemonPageComponent {
     );
   });
 
-  // infinite scroll hanya saat browsing biasa (bukan filter type, bukan sedang search)
   public readonly showInfiniteScroll = computed<boolean>(
     () => !this.selectedType() && !this.searchValue().trim(),
   );
@@ -99,7 +97,6 @@ export class PokemonPageComponent {
     const term = (event.detail as { value?: string }).value ?? '';
     this.searchValue.set(term);
 
-    // saat user mulai search, pastikan seluruh data ter-load (sekali saja)
     if (term.trim()) {
       void this.pokemonService.loadAllRemaining();
     }

@@ -1,4 +1,3 @@
-// query-params.builder.ts
 import { HttpParams } from '@angular/common/http';
 
 export function buildHttpParams(params: Record<string, unknown>): HttpParams {
@@ -8,12 +7,10 @@ export function buildHttpParams(params: Record<string, unknown>): HttpParams {
     if (value === null || value === undefined) continue;
 
     if (Array.isArray(value)) {
-      // append untuk repeated keys: ?fields=a&fields=b
       value.forEach((v) => {
         httpParams = httpParams.append(key, serialize(v));
       });
     } else if (typeof value === 'object') {
-      // object kompleks → JSON string
       httpParams = httpParams.set(key, JSON.stringify(value));
     } else {
       httpParams = httpParams.set(key, String(value));
