@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>About</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="profile">
+    <img [src]="avatarUrl" [alt]="name" class="profile__avatar" />
+    <h1 class="profile__name">{{ name }}</h1>
+    <span class="profile__role">{{ role }}</span>
+  </div>
+
+  <section class="about">
+    <h2 class="about__title">About this app</h2>
+    <p class="about__text">{{ bio }}</p>
+
+    <div class="tech">
+      @for (tech of techStack; track tech.label) {
+        <div class="tech__item">
+          <span class="tech__label">{{ tech.label }}</span>
+          <span class="tech__version">v{{ tech.version }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="project-links">
+      @for (link of projectLinks; track link.label) {
+        <a
+          class="project-link"
+          [href]="link.url"
+          target="_blank"
+          rel="noopener noreferrer">
+          <ion-icon [name]="link.icon" class="project-link__icon"></ion-icon>
+          <span class="project-link__body">
+            <span class="project-link__label">{{ link.label }}</span>
+            <span class="project-link__desc">{{ link.description }}</span>
+          </span>
+          <ion-icon name="globe-outline" class="project-link__chevron"></ion-icon>
+        </a>
+      }
+    </div>
+  </section>
+
+  <section class="contact">
+    <h2 class="contact__title">Get in touch</h2>
+    <div class="contact__list">
+      @for (link of contacts; track link.label) {
+        <a
+          class="contact-item"
+          [href]="link.url"
+          target="_blank"
+          rel="noopener noreferrer">
+          <ion-icon [name]="link.icon" class="contact-item__icon"></ion-icon>
+          <span class="contact-item__body">
+            <span class="contact-item__label">{{ link.label }}</span>
+            <span class="contact-item__value">{{ link.value }}</span>
+          </span>
+        </a>
+      }
+    </div>
+  </section>
+
+  <p class="footer">Built with Ionic & Angular · Data from PokeAPI</p>
+</ion-content>
