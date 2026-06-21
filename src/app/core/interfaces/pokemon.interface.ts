@@ -38,9 +38,10 @@ export interface PokemonDetail {
   name: string;
   imageUrl: string;
   sprites: {
-    officialArtwork: string;
-    front: string | null;
-    frontShiny: string | null;
+    dream_world: string | null;
+    home: string | null;
+    official_artwork: string;
+    showdown: string | null;
   };
   cryUrl: string | null;
   height: number;

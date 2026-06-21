@@ -82,7 +82,7 @@ export class PokemonFavouritePageComponent {
           role: 'destructive',
           handler: async () => {
             this.favouriteService.removeFavourite(pokemon);
-            await this.toastService.error(
+            await this.toastService.info(
               `${pokemon.name} removed from favourites`,
             );
           },

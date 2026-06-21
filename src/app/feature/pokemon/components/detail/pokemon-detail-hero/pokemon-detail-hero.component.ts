@@ -22,31 +22,32 @@ import { getTypeColor } from '@core/utils/pokemon-color.constant';
 export class PokemonDetailHeroComponent {
   public readonly pokemon = input.required<PokemonDetail>();
 
-  // expose helper warna ke template
   public readonly getTypeColor = getTypeColor;
-
-  // gambar yang sedang dipilih di galeri
   public readonly selectedImage = signal<string>('');
 
-  // daftar thumbnail galeri yang tersedia
   public readonly gallery = computed<{ label: string; url: string }[]>(() => {
-    const p = this.pokemon();
+    const pokemon = this.pokemon();
     const items: { label: string; url: string }[] = [];
-    if (p.sprites.officialArtwork) {
-      items.push({ label: 'Artwork', url: p.sprites.officialArtwork });
+    if (pokemon.sprites.official_artwork) {
+      items.push({
+        label: 'Official Artwork',
+        url: pokemon.sprites.official_artwork,
+      });
     }
-    if (p.sprites.front) {
-      items.push({ label: 'Normal', url: p.sprites.front });
+    if (pokemon.sprites.dream_world) {
+      items.push({ label: 'Dream World', url: pokemon.sprites.dream_world });
     }
-    if (p.sprites.frontShiny) {
-      items.push({ label: 'Shiny', url: p.sprites.frontShiny });
+    if (pokemon.sprites.home) {
+      items.push({ label: 'Home', url: pokemon.sprites.home });
+    }
+    if (pokemon.sprites.showdown) {
+      items.push({ label: 'Showdown', url: pokemon.sprites.showdown });
     }
     return items;
   });
 
-  // gambar yang ditampilkan besar: pilihan user, atau default gambar utama
   public readonly displayImage = computed<string>(
-    () => this.selectedImage() || this.pokemon().imageUrl,
+    () => this.selectedImage() || this.pokemon().sprites.official_artwork,
   );
 
   constructor() {

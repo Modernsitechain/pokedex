@@ -197,15 +197,20 @@ export class PokemonService extends BaseService {
 
   private mapDetail(res: PokemonDetailResponse): PokemonDetail {
     const sprites = res.sprites;
-    const artwork = sprites.other?.['official-artwork']?.front_default;
+    const dreamWorld = sprites.other?.['dream_world']?.front_default;
+    const home = sprites.other?.['home']?.front_default;
+    const officialArtwork = sprites.other?.['official-artwork']?.front_default;
+    const showdown = sprites.other?.['showdown']?.front_default;
     return {
       id: String(res.id),
       name: formatPokemonName(res.name),
-      imageUrl: artwork ?? sprites.front_default ?? '',
+      imageUrl:
+        getBasePokemonImageUrl(String(res.id)) ?? sprites.front_default ?? '',
       sprites: {
-        officialArtwork: artwork ?? sprites.front_default ?? '',
-        front: sprites.front_default,
-        frontShiny: sprites.front_shiny,
+        dream_world: dreamWorld ?? null,
+        home: home ?? null,
+        official_artwork: officialArtwork ?? '',
+        showdown: showdown ?? null,
       },
       cryUrl: res.cries?.latest ?? null,
       height: res.height / 10,

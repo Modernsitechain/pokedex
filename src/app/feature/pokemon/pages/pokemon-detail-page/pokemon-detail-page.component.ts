@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import {
   IonContent,
@@ -22,16 +21,7 @@ import {
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonDetail } from '@core/interfaces/pokemon.interface';
 import { addIcons } from 'ionicons';
-import {
-  heart,
-  heartOutline,
-  chevronBack,
-  chevronForward,
-  volumeHighOutline,
-  scaleOutline,
-  resizeOutline,
-  flashOutline,
-} from 'ionicons/icons';
+import { heart, heartOutline } from 'ionicons/icons';
 import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { ToastService } from '@core/services/toast/toast.service';
 import { NgTemplateOutlet } from '@angular/common';
@@ -66,7 +56,6 @@ import { PokemonDetailStatsComponent } from '@feature/pokemon/components/detail/
 })
 export class PokemonDetailPageComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly router = inject(Router);
 
   public readonly pokemonService = inject(PokemonService);
   private readonly favouriteService = inject(FavouriteService);
@@ -76,39 +65,10 @@ export class PokemonDetailPageComponent {
   public readonly errorMessage = signal<string | null>(null);
   public readonly pokemon = signal<PokemonDetail | null>(null);
 
-  // gambar yang sedang dipilih di galeri
-  public readonly selectedImage = signal<string>('');
-
-  public readonly maxStat = 255;
-  public readonly maxPokemonId = 1025;
-
-  // daftar thumbnail galeri (artwork, normal, shiny) yang tersedia
-  public readonly gallery = computed<{ label: string; url: string }[]>(() => {
-    const p = this.pokemon();
-    if (!p) return [];
-    const items: { label: string; url: string }[] = [];
-    if (p.sprites.officialArtwork) {
-      items.push({ label: 'Artwork', url: p.sprites.officialArtwork });
-    }
-    if (p.sprites.front) {
-      items.push({ label: 'Normal', url: p.sprites.front });
-    }
-    if (p.sprites.frontShiny) {
-      items.push({ label: 'Shiny', url: p.sprites.frontShiny });
-    }
-    return items;
-  });
-
   constructor() {
     addIcons({
       heart,
       heartOutline,
-      chevronBack,
-      chevronForward,
-      volumeHighOutline,
-      scaleOutline,
-      resizeOutline,
-      flashOutline,
     });
     this.initialize();
   }
@@ -122,47 +82,6 @@ export class PokemonDetailPageComponent {
           this.loadPokemonDetail(pokemonId);
         }
       });
-  }
-
-  private loadPokemonDetail(pokemonId: string): void {
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
-    this.pokemonService
-      .getPokemonDetail(pokemonId)
-      .pipe(
-        tap((pokemon) => {
-          this.pokemon.set(pokemon);
-          this.selectedImage.set(pokemon.imageUrl); // reset gambar utama
-        }),
-        catchError(() => {
-          this.errorMessage.set('Failed to load Pokémon details');
-          return EMPTY;
-        }),
-        finalize(() => this.isLoading.set(false)),
-      )
-      .subscribe();
-  }
-
-  public goTo(id: number): void {
-    if (id < 1 || id > this.maxPokemonId) return;
-    this.router.navigate(['/detail', id]);
-  }
-
-  public statPercent(value: number): number {
-    return Math.min(100, (value / this.maxStat) * 100);
-  }
-
-  public selectImage(url: string): void {
-    this.selectedImage.set(url);
-  }
-
-  public playCry(): void {
-    const url = this.pokemon()?.cryUrl;
-    if (!url) return;
-    const audio = new Audio(url);
-    audio.volume = 0.4; // cry PokeAPI cukup keras, redam sedikit
-    void audio.play().catch(() => undefined);
   }
 
   protected isFavourite(pokemonId: string): boolean {
@@ -181,5 +100,24 @@ export class PokemonDetailPageComponent {
       this.favouriteService.addFavourite(pokemon);
       await this.toastService.success(`${pokemon.name} added to favourites`);
     }
+  }
+
+  private loadPokemonDetail(pokemonId: string): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.pokemonService
+      .getPokemonDetail(pokemonId)
+      .pipe(
+        tap((pokemon) => {
+          this.pokemon.set(pokemon);
+        }),
+        catchError(() => {
+          this.errorMessage.set('Failed to load Pokémon details');
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe();
   }
 }
