@@ -1,6 +1,8 @@
 # Pokedex
 
-A mobile-first Pokédex application built with **Angular**, **Ionic**, and **Capacitor**. Browse Pokémon, view detailed stats, abilities, and moves, and save your favourites — all from a single codebase that runs on **web**, **Android**, and **iOS**.
+This repository contains **Axel Eldrian Hadiwibowo's** technical assessment submission for the **Angular Frontend Developer** position.
+
+It is a mobile-first Pokédex application built with **Angular**, **Ionic**, and **Capacitor**. The app allows users to browse Pokémon, view detailed stats, abilities, and moves, and save favourites, all from a single codebase that runs on **web**, **Android**, and **iOS**.
 
 ---
 
