@@ -2,25 +2,28 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
   input,
-  output,
   signal,
 } from '@angular/core';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { volumeHighOutline } from 'ionicons/icons';
 import { PokemonDetail } from '@core/interfaces/pokemon.interface';
+import { ChipComponent } from '@src/app/shared/components/chip/chip.component';
+import { getTypeColor } from '@core/utils/pokemon-color.constant';
 
 @Component({
   selector: 'app-pokemon-detail-hero',
   templateUrl: './pokemon-detail-hero.component.html',
   styleUrls: ['./pokemon-detail-hero.component.scss'],
-  imports: [IonIcon],
+  imports: [IonIcon, ChipComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonDetailHeroComponent {
   public readonly pokemon = input.required<PokemonDetail>();
+
+  // expose helper warna ke template
+  public readonly getTypeColor = getTypeColor;
 
   // gambar yang sedang dipilih di galeri
   public readonly selectedImage = signal<string>('');

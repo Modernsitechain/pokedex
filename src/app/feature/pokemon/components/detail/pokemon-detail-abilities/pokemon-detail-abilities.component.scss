@@ -1,3 +1,5 @@
+@use "includes" as i;
+
 .section {
   margin-top: 24px;
 
@@ -9,28 +11,7 @@
 }
 
 .chips {
-  display: flex;
+  @include i.flex();
   flex-wrap: wrap;
-  gap: 8px;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--ion-color-light);
-  font-size: 0.82rem;
-  font-weight: 600;
-
-  &__tag {
-    font-size: 0.66rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    background: var(--ion-color-medium-tint);
-    border-radius: 6px;
-    padding: 1px 5px;
-    color: #fff;
-  }
+  gap: .625rem;
 }
