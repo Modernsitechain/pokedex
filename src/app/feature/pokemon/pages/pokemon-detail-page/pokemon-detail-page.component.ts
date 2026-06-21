@@ -40,7 +40,6 @@ import { PokemonDetailHeroComponent } from '@feature/pokemon/components/detail/p
 import { PokemonDetailInfoComponent } from '@feature/pokemon/components/detail/pokemon-detail-info/pokemon-detail-info.component';
 import { PokemonDetailAbilitiesComponent } from '@feature/pokemon/components/detail/pokemon-detail-abilities/pokemon-detail-abilities.component';
 import { PokemonDetailStatsComponent } from '@feature/pokemon/components/detail/pokemon-detail-stats/pokemon-detail-stats.component';
-import { PokemonDetailMovesComponent } from '@feature/pokemon/components/detail/pokemon-detail-moves/pokemon-detail-moves.component';
 
 @Component({
   selector: 'app-pokemon-detail-page',
@@ -62,7 +61,6 @@ import { PokemonDetailMovesComponent } from '@feature/pokemon/components/detail/
     PokemonDetailInfoComponent,
     PokemonDetailAbilitiesComponent,
     PokemonDetailStatsComponent,
-    PokemonDetailMovesComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

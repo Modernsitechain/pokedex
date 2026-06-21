@@ -221,7 +221,6 @@ export class PokemonService extends BaseService {
         name: s.stat.name,
         value: s.base_stat,
       })),
-      moves: res.moves.map((m) => m.move.name),
     };
   }
 }

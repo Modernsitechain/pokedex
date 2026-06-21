@@ -50,5 +50,4 @@ export interface PokemonDetail {
   types: string[];
   abilities: { name: string; isHidden: boolean }[];
   stats: { name: string; value: number }[];
-  moves: string[];
 }
