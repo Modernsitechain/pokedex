@@ -10,8 +10,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "build-pokedex-ios": "ionic capacitor build ios --project app --configuration development",
-    "build-pokedex-android": "ionic capacitor build android --project app --configuration development"
+    "build-pokedex-ios": "ionic capacitor build ios --project app --configuration production",
+    "build-pokedex-android": "ionic capacitor build android --project app --configuration production"
   },
   "private": true,
   "dependencies": {

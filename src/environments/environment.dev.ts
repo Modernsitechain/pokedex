@@ -6,9 +6,6 @@ export const environment = {
   BASE_URL: {
     POKEAPI: 'https://pokeapi.co/api/v2',
     SPRITE_IMAGE:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home',
-    // SPRITE_IMAGE:
-      // 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon',
-      
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon',
   },
 };
