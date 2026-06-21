@@ -21,7 +21,6 @@ import { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import { PokemonItemComponent } from '@feature/pokemon/components/pokemon-item/pokemon-item.component';
 import { PokemonFilterButtonComponent } from '@feature/pokemon/components/pokemon-filter-button/pokemon-filter-button.component';
-import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { PokemonService } from '@core/services/pokemon/pokemon.service';
 import { PokemonItem } from '@core/interfaces/pokemon.interface';
 import { PokemonItemSkeletonComponent } from '@feature/pokemon/components/pokemon-item-skeleton/pokemon-item-skeleton.component';
@@ -44,13 +43,12 @@ import { PokemonEmptyStateComponent } from '@feature/pokemon/components/pokemon-
     PokemonItemComponent,
     PokemonItemSkeletonComponent,
     PokemonFilterButtonComponent,
-    PokemonEmptyStateComponent
+    PokemonEmptyStateComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonPageComponent {
   private readonly pokemonService = inject(PokemonService);
-  private readonly favouriteService = inject(FavouriteService);
 
   public readonly selectedType = signal<string>('');
   public readonly selectedTypeLoading = signal<boolean>(false);
@@ -95,14 +93,6 @@ export class PokemonPageComponent {
 
   constructor() {
     this.initialize();
-  }
-
-  public isFavourite(pokemonId: string): boolean {
-    return this.favouriteService.isFavourite(pokemonId);
-  }
-
-  public toggleFavourite(pokemon: PokemonItem): void {
-    void this.favouriteService.toggleFavourite(pokemon);
   }
 
   public onSearch(event: CustomEvent): void {

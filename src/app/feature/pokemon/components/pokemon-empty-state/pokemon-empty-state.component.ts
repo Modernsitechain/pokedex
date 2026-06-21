@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { searchOutline } from 'ionicons/icons';
+import { alertCircleOutline, searchOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-pokemon-empty-state',
@@ -18,6 +18,6 @@ export class PokemonEmptyStateComponent {
   );
 
   constructor() {
-    addIcons({ searchOutline });
+    addIcons({ searchOutline, alertCircleOutline });
   }
 }
