@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/feature/pokemon/components/detail/pokemon-detail-moves/pokemon-detail-moves.component.scss"],
-  "sourcesContent": [".section {\n  margin-top: 24px;\n\n  &__title {\n    font-size: 1.1rem;\n    font-weight: 700;\n    margin: 0 0 12px;\n  }\n}\n\n.chips {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n}\n\n.chip {\n  display: inline-flex;\n  align-items: center;\n  padding: 6px 12px;\n  border-radius: 999px;\n  background: var(--ion-color-light);\n  font-size: 0.82rem;\n  font-weight: 600;\n}"],
-  "mappings": ";AAAA,CAAA;AACE,cAAA;;AAEA,CAAA;AACE,aAAA;AACA,eAAA;AACA,UAAA,EAAA,EAAA;;AAIJ,CAAA;AACE,WAAA;AACA,aAAA;AACA,OAAA;;AAGF,CAAA;AACE,WAAA;AACA,eAAA;AACA,WAAA,IAAA;AACA,iBAAA;AACA,cAAA,IAAA;AACA,aAAA;AACA,eAAA;;",
-  "names": []
-}
