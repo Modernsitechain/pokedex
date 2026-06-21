@@ -14,7 +14,11 @@
 
   <div class="hero__types">
     @for (type of pokemon().types; track type) {
-      <span class="type-badge" [attr.data-type]="type">{{ type }}</span>
+      <app-chip
+        [color]="getTypeColor(type).bg"
+        [textColor]="getTypeColor(type).text">
+        {{ type }}
+      </app-chip>
     }
   </div>
 

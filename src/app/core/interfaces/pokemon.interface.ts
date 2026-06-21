@@ -38,17 +38,26 @@ export interface PokemonDetail {
   name: string;
   imageUrl: string;
   sprites: {
-    officialArtwork: string;
-    front: string | null;
-    frontShiny: string | null;
+    dream_world: string | null;
+    home: string | null;
+    official_artwork: string;
+    showdown: string | null;
   };
   cryUrl: string | null;
   height: number;
   weight: number;
   baseExperience: number;
-  totalStats: number;
   types: string[];
-  abilities: { name: string; isHidden: boolean }[];
-  stats: { name: string; value: number }[];
-  moves: string[];
+  abilities: PokemonDetailAbility[];
+  stats: PokemonDetailStat[];
+}
+
+export interface PokemonDetailAbility {
+  name: string;
+  isHidden: boolean;
+}
+
+export interface PokemonDetailStat {
+  name: string;
+  value: number;
 }

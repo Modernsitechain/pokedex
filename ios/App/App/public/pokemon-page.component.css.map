@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/feature/pokemon/pages/pokemon-page/pokemon-page.component.scss", "src/styles/includes/_flex.scss"],
+  "sourcesContent": ["@use \"includes\" as i;\n\nion-list {\n  @include i.flex-column();\n  gap: .625rem;\n}\n", "@mixin flex(\n  $align-items: center,\n  $justify-content: flex-start,\n  $inline: false\n) {\n  @if $inline {\n    display: inline-flex;\n  } @else {\n    display: flex;\n  }\n\n  align-items: $align-items;\n  justify-content: $justify-content;\n}\n\n@mixin flex-row(\n  $align-items: center,\n  $justify-content: flex-start,\n  $inline: false\n) {\n  @include flex($align-items, $justify-content, $inline);\n  flex-direction: row;\n}\n\n@mixin flex-column(\n  $align-items: flex-start,\n  $justify-content: space-between,\n  $inline: false\n) {\n  @include flex($align-items, $justify-content, $inline);\n  flex-direction: column;\n}\n"],
+  "mappings": ";AAEA;ACMI,WAAA;AAGF,eAcc;AAbd,mBAckB;AAIlB,kBAAA;AD1BA,OAAA;;",
+  "names": []
+}
