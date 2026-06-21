@@ -1,11 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { PokemonDetail } from '@core/interfaces/pokemon.interface';
 
 type Stat = PokemonDetail['stats'][number];
+
+const POKEMON_BASE_STAT_MAX = 255;
 
 @Component({
   selector: 'app-pokemon-detail-stats',
@@ -15,11 +13,8 @@ type Stat = PokemonDetail['stats'][number];
 })
 export class PokemonDetailStatsComponent {
   public readonly stats = input.required<Stat[]>();
-  public readonly total = input.required<number>();
-
-  private readonly maxStat = 255;
 
   public statPercent(value: number): number {
-    return Math.min(100, (value / this.maxStat) * 100);
+    return Math.min(100, (value / POKEMON_BASE_STAT_MAX) * 100);
   }
 }

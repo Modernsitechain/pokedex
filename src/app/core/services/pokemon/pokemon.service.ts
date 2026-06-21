@@ -211,7 +211,6 @@ export class PokemonService extends BaseService {
       height: res.height / 10,
       weight: res.weight / 10,
       baseExperience: res.base_experience,
-      totalStats: res.stats.reduce((sum, s) => sum + s.base_stat, 0),
       types: res.types.map((t) => t.type.name),
       abilities: res.abilities.map((a) => ({
         name: a.ability.name,
