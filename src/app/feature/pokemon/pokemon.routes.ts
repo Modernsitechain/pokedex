@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { PokemonPageComponent } from './pages/pokemon-page/pokemon-page.component';
 import { PokemonFavouritePageComponent } from './pages/pokemon-favourite-page/pokemon-favourite-page.component';
+import { ProfilePageComponent } from '@feature/profile/pages/profile-page/profile-page.component';
 
 export const POKEMON_ROUTES: Routes = [
   {
@@ -10,6 +11,10 @@ export const POKEMON_ROUTES: Routes = [
   {
     path: 'favourite',
     component: PokemonFavouritePageComponent,
+  },
+  {
+    path: 'profile',
+    component: ProfilePageComponent,
   },
   { path: '', pathMatch: 'full', redirectTo: 'list' },
   { path: '**', redirectTo: 'list' },

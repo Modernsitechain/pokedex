@@ -12,7 +12,7 @@ import {
   IonLabel,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { listOutline, heartOutline } from 'ionicons/icons';
+import { listOutline, heartOutline, personCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-pokemon-layout',
@@ -31,6 +31,6 @@ export class PokemonLayoutComponent {
   public environmentInjector = inject(EnvironmentInjector);
 
   constructor() {
-    addIcons({ listOutline, heartOutline });
+    addIcons({ listOutline, heartOutline, personCircleOutline });
   }
 }
