@@ -47,6 +47,16 @@ export interface PokemonDetail {
   weight: number;
   baseExperience: number;
   types: string[];
-  abilities: { name: string; isHidden: boolean }[];
-  stats: { name: string; value: number }[];
+  abilities: PokemonDetailAbility[];
+  stats: PokemonDetailStat[];
+}
+
+export interface PokemonDetailAbility {
+  name: string;
+  isHidden: boolean;
+}
+
+export interface PokemonDetailStat {
+  name: string;
+  value: number;
 }

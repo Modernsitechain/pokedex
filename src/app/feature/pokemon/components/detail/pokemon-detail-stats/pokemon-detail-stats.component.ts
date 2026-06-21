@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { PokemonDetailStat } from '@core/interfaces/pokemon.interface';
 
 const POKEMON_BASE_STAT_MAX = 255;
 
@@ -9,7 +10,7 @@ const POKEMON_BASE_STAT_MAX = 255;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonDetailStatsComponent {
-  public readonly stats = input.required<{ name: string; value: number }[]>();
+  public readonly stats = input.required<PokemonDetailStat[]>();
 
   public statPercent(value: number): number {
     return Math.min(100, (value / POKEMON_BASE_STAT_MAX) * 100);
