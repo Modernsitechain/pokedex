@@ -34,7 +34,7 @@ export interface PokemonItem {
 }
 
 export interface PokemonDetail {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
   height: number; // dalam meter

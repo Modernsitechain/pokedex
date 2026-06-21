@@ -6,7 +6,15 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  finalize,
+  firstValueFrom,
+  map,
+  of,
+  tap,
+} from 'rxjs';
 import {
   IonContent,
   IonHeader,
@@ -31,6 +39,7 @@ import {
 } from 'ionicons/icons';
 import { FavouriteService } from '@core/services/favourite/favourite.service';
 import { getBasePokemonImageUrl } from '@core/utils/pokemon-helper.function';
+import { ToastService } from '@core/services/toast/toast.service';
 
 @Component({
   selector: 'app-pokemon-detail-page',
@@ -57,43 +66,46 @@ export class PokemonDetailPageComponent {
 
   public readonly pokemonService = inject(PokemonService);
   private readonly favouriteService = inject(FavouriteService);
+  private readonly toastService = inject(ToastService);
 
-  public readonly detail = signal<PokemonDetail | null>(null);
-  public readonly loading = signal<boolean>(true);
-  public readonly error = signal<boolean>(false);
-  public readonly currentPokemon = signal<string>('');
+  public readonly isLoading = signal<boolean>(false);
+  public readonly errorMessage = signal<string | null>(null);
+  public readonly pokemon = signal<PokemonDetail | null>(null);
 
   public readonly maxStat = 255;
   public readonly maxPokemonId = 1025; // batas atas saat ini di PokeAPI
 
   constructor() {
     addIcons({ heart, heartOutline, chevronBack, chevronForward });
-    this.activatedRoute.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const pokemonId = params.get('id');
-      if (pokemonId) {
-        this.currentPokemon.set(pokemonId);
-        this.load(pokemonId);
-      }
-    });
+    this.initialize();
   }
 
-  private initialize():void{
-    // this.activatedRoute.paramMap.pipe(takeUntilDestroyed())
+  private initialize(): void {
+    this.activatedRoute.paramMap
+      .pipe(takeUntilDestroyed())
+      .subscribe((params) => {
+        const pokemonId = params.get('id');
+        if (pokemonId) {
+          this.loadPokemonDetail(pokemonId);
+        }
+      });
   }
 
-  private async load(name: string): Promise<void> {
-    this.loading.set(true);
-    this.error.set(false);
-    try {
-      const data = await firstValueFrom(
-        this.pokemonService.getPokemonDetail(name),
-      );
-      this.detail.set(data);
-    } catch {
-      this.error.set(true);
-    } finally {
-      this.loading.set(false);
-    }
+  private loadPokemonDetail(pokemonId: string): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.pokemonService
+      .getPokemonDetail(pokemonId)
+      .pipe(
+        tap((pokemon) => this.pokemon.set(pokemon)),
+        catchError(() => {
+          this.errorMessage.set('Gagal memuat detail Pokémon');
+          return EMPTY; // hentikan stream dengan rapi
+        }),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe();
   }
 
   public goTo(id: number): void {
@@ -109,13 +121,19 @@ export class PokemonDetailPageComponent {
     return this.favouriteService.isFavourite(pokemonId);
   }
 
-  public toggleFavourite(): void {
-    const d = this.detail();
-    if (!d) return;
-    this.favouriteService.toggleFavourite({
-      id: String(d.id),
-      name: d.name,
-      imageUrl: getBasePokemonImageUrl(String(d.id)),
-    });
+  public async toggleFavourite(): Promise<void> {
+    const pokemon = this.pokemon();
+
+    if (!pokemon) return;
+
+    const wasFavourite = this.isFavourite(pokemon.id);
+
+    if (wasFavourite) {
+      this.favouriteService.removeFavourite(pokemon);
+      await this.toastService.error(`${pokemon.name} removed from favourites`);
+    } else {
+      this.favouriteService.addFavourite(pokemon);
+      await this.toastService.success(`${pokemon.name} added to favourites`);
+    }
   }
 }

@@ -198,7 +198,7 @@ export class PokemonService extends BaseService {
   private mapDetail(res: PokemonDetailResponse): PokemonDetail {
     const artwork = res.sprites.other?.['official-artwork']?.front_default;
     return {
-      id: res.id,
+      id: String(res.id),
       name: formatPokemonName(res.name),
       imageUrl: artwork ?? res.sprites.front_default ?? '',
       height: res.height / 10, // API: decimeter → meter
