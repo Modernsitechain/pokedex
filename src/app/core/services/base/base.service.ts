@@ -1,12 +1,8 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { buildHttpParams } from '@src/app/core/utils/query-params.builder';
 import { environment } from '@src/environments/environment';
-
-interface GetApiOptions {
-  absoluteUrl?: boolean;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +11,13 @@ export class BaseService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.BASE_URL.POKEAPI;
 
+  /**
+   * Sends a GET request to the PokeAPI.
+   *
+   * @param endpoint - relative path like `/pokemon`, or a full URL if `absoluteUrl` is true
+   * @param params - query params (e.g. `{ limit: 20 }`)
+   * @param options.absoluteUrl - use `endpoint` as a full URL
+   */
   protected getApi<R, P = unknown>(
     endpoint: string,
     params?: P,
@@ -32,6 +35,7 @@ export class BaseService {
     });
   }
 
+  /** Joins baseUrl + endpoint into one URL, avoiding double slashes. */
   private buildUrl(endpoint: string): string {
     return `${this.baseUrl.replace(/\/$/, '')}/${endpoint.replace(/^\//, '')}`;
   }
