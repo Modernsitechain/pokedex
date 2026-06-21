@@ -1,26 +1,22 @@
+@use "includes" as i;
+@use "themes" as t;
+
 .section {
   margin-top: 24px;
 
   &__header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+    @include i.flex(baseline, space-between);
   }
+
   &__title {
     font-size: 1.1rem;
     font-weight: 700;
     margin: 0 0 12px;
   }
-  &__total {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--ion-color-primary);
-  }
 }
 
 .stat-row {
-  display: flex;
-  align-items: center;
+  @include i.flex(center);
   gap: 8px;
   margin-bottom: 8px;
 
@@ -37,13 +33,13 @@
   .stat-bar {
     flex: 1;
     height: 8px;
-    background: var(--ion-color-light);
+    background: t.get-color('primary-neutral', 50);
     border-radius: 4px;
     overflow: hidden;
   }
   .stat-bar-fill {
     height: 100%;
-    background: var(--ion-color-primary);
+    background: t.get-color('primary-neutral', 900);
     transition: width 0.4s ease;
   }
 }

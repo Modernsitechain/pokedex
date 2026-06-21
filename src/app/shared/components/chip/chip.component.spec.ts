@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PokemonDetailMovesComponent } from './pokemon-detail-moves.component';
+import { ChipComponent } from './chip.component';
 
-describe('PokemonDetailMovesComponent', () => {
-  let component: PokemonDetailMovesComponent;
-  let fixture: ComponentFixture<PokemonDetailMovesComponent>;
+describe('ChipComponent', () => {
+  let component: ChipComponent;
+  let fixture: ComponentFixture<ChipComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PokemonDetailMovesComponent ],
+      declarations: [ ChipComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PokemonDetailMovesComponent);
+    fixture = TestBed.createComponent(ChipComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

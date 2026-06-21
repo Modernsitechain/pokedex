@@ -197,21 +197,25 @@ export class PokemonService extends BaseService {
 
   private mapDetail(res: PokemonDetailResponse): PokemonDetail {
     const sprites = res.sprites;
-    const artwork = sprites.other?.['official-artwork']?.front_default;
+    const dreamWorld = sprites.other?.['dream_world']?.front_default;
+    const home = sprites.other?.['home']?.front_default;
+    const officialArtwork = sprites.other?.['official-artwork']?.front_default;
+    const showdown = sprites.other?.['showdown']?.front_default;
     return {
       id: String(res.id),
       name: formatPokemonName(res.name),
-      imageUrl: artwork ?? sprites.front_default ?? '',
+      imageUrl:
+        getBasePokemonImageUrl(String(res.id)) ?? sprites.front_default ?? '',
       sprites: {
-        officialArtwork: artwork ?? sprites.front_default ?? '',
-        front: sprites.front_default,
-        frontShiny: sprites.front_shiny,
+        dream_world: dreamWorld ?? null,
+        home: home ?? null,
+        official_artwork: officialArtwork ?? '',
+        showdown: showdown ?? null,
       },
       cryUrl: res.cries?.latest ?? null,
       height: res.height / 10,
       weight: res.weight / 10,
       baseExperience: res.base_experience,
-      totalStats: res.stats.reduce((sum, s) => sum + s.base_stat, 0),
       types: res.types.map((t) => t.type.name),
       abilities: res.abilities.map((a) => ({
         name: a.ability.name,
@@ -221,7 +225,6 @@ export class PokemonService extends BaseService {
         name: s.stat.name,
         value: s.base_stat,
       })),
-      moves: res.moves.map((m) => m.move.name),
     };
   }
 }

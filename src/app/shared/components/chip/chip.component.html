@@ -1,0 +1,9 @@
+<span
+  class="chip ion-text-capitalize"
+  [style.background]="color() || null"
+  [style.color]="textColor() || null">
+  <ng-content></ng-content>
+  @if (tag()) {
+    <span class="chip__tag">{{ tag() }}</span>
+  }
+</span>
