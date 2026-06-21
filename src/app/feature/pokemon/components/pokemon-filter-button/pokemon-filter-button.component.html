@@ -1,13 +1,13 @@
 <ion-buttons>
   <ion-button id="type-filter-trigger">
-    <ion-icon
-      slot="icon-only"
-      name="filter">
-    </ion-icon>
+    <ion-icon slot="icon-only" name="filter"></ion-icon>
   </ion-button>
 </ion-buttons>
 
-<ion-popover trigger="type-filter-trigger" [dismissOnSelect]="true">
+<ion-popover
+  trigger="type-filter-trigger"
+  [dismissOnSelect]="true"
+>
   <ng-template>
     <ion-content>
       @if (loading()) {

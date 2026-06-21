@@ -1,8 +1,21 @@
-ion-list{
-    max-height: 32rem;
-    overflow-y: auto;
+ion-list {
+  max-height: 32rem;
+  overflow-y: auto;
 }
+
 ion-item {
   --inner-padding-start: 1rem;
   --inner-padding-end: 1rem;
+}
+
+ion-popover {
+  --width: 250px;
+
+  @media (min-width: 481px) {
+    &::part(content) {
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+    }
+  }
 }
