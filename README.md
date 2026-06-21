@@ -6,6 +6,11 @@ A mobile-first Pokédex application built with **Angular**, **Ionic**, and **Cap
 
 ## Demo
 
+
+https://github.com/user-attachments/assets/987063e9-ddda-4c75-9495-baa48df37483
+
+
+
 Try out the app or watch it in action on each platform.
 
 ### Web
